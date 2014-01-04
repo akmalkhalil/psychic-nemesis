@@ -110,9 +110,7 @@ def blackjack():
             print ("BUST")
     print()
     print()
-    array = comBlackjack()
-    cPoints = array[1]
-    cHand = array [0]
+    cHand, cPoints = comBlackjack()
     whoWins(hand, cHand, points, cPoints)
         
     
@@ -147,10 +145,10 @@ def comBlackjack():
     print ("computers hand is: ", hand)
     points = sumVals(hand,'com')
     time.sleep(0.5)
-    print("the score therefore is:" , points)
     stand = False
     while stand == False:
         points = sumVals(hand, 'com')
+        print("the score therefore is:" , points)
         if len(hand) == 2 and int(points) == 21:
             stand = True
             print ('WINNER WINNER, CHICKEN DINNER')
@@ -163,11 +161,10 @@ def comBlackjack():
                 dealt = deal(deck1)
                 hand.append(dealt)
                 print("the hand now is", hand)
-                print("the score = ", points)
         
               
         time.sleep(1)
-    return [hand, points]
+    return hand, points
     
 
     
@@ -189,23 +186,23 @@ def whoWins(pCards, cCards, pScore, cScore):
     if pScore > 21:
         print ("you are BUST so the Dealer wins")
         bet = 0
-        print("you now have", chips)
+        print("you now have", chips, 'chips')
     elif pScore == 21 and len (pCards) == 2:
         print("YOU WIN")
         chips = chips + bet * 2.5
         bet = 0
-        print("you now have", chips)
+        print("you now have", chips,'chips')
     else:
         if pScore > cScore:
             print("YOU WIN")
             chips = chips + bet * 2
             bet = 0
-            print("you now have", chips) 
+            print("you now have", chips, 'chips') 
         elif cScore > 21:
             print("YOU WIN")
             chips = chips + bet*2
             bet = 0
-            print("you now have", chips)
+            print("you now have", chips, 'chips')
         else:
             print("YOU LOSE to the dealer")
             bet = 0
@@ -217,14 +214,20 @@ def placeBet(money):
     #calling chips money just so i have summat different in function
     print("you have", money, "chips")
     time.sleep(0.4)
-    print("how much would you like to bet?")
     done = False
     while done == False:
+        print("how much would you like to bet?")
         try:
             stake = int(input())
-            done = True
+            if stake >= 20 and stake <= money:
+                done = True
+            elif stake < 20:
+                done = False
+                print("that's below the minimum bet")
+            elif stake > money:
+                print(" you don't have than many chips")
         except ValueError:
-            print("you didn't enter a number")
+            print("you didn't enter an integer")
             done = False
     print ("you have placed a bet of", stake)
     money = money - stake
@@ -233,5 +236,23 @@ def placeBet(money):
 
     
 chips, bet = 100, 0
+print("this crappy game was created by Akmal Khalil")
 print("NOTE: IF TIE, DEALER WINS BY DEFAULT")
-blackjack()
+print("MINIMUM BET IS 20")
+print("This deck begins with", len(deck1.cardsDict), 'cards')
+for i in range(5):
+    time.sleep(1)
+    print(deck1.suits)
+time.sleep(0.8)
+print("WELCOME TO BLACKJACK")
+time.sleep(0.4)
+
+while True :
+    blackjack()
+    if chips < 20:
+        print("you no longer have any chips")
+        break
+    
+#now how to get multiplayer?????
+#i seem to get a J straight if my score is 14
+    #it's just happened 3 times in a row
