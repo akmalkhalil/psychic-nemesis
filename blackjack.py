@@ -79,12 +79,17 @@ def sumVals(cards, user):
 
     
 def blackjack():
+    global chips, bet
+    print()
     print("Whats your name")
     player = input()
     time.sleep(0.5)
     print ("Hello " +player)
+    player = 'player'
+    #that't to stop them typing 'com' although i myt make that default
     time.sleep(0.2)
     hand = [deal(deck1), deal(deck1)]
+    chips, bet = placeBet(chips)
     print ("Your hand is", hand)
     time.sleep(0.5)
     points = sumVals(hand, player)
@@ -93,7 +98,7 @@ def blackjack():
     stand = False
     if points == 21:
         stand = True
-        print("BLACKJACK")
+        print("WINNER WINNER, CHICKEN DINENR")
     while stand == False and points < 21:
         stand = hit(hand, stand)
         time.sleep(0.5)
@@ -169,6 +174,7 @@ def comBlackjack():
 def whoWins(pCards, cCards, pScore, cScore):
     #p for player
     #c for computer
+    global bet, chips
     print()
     print()
     print()
@@ -182,18 +188,50 @@ def whoWins(pCards, cCards, pScore, cScore):
     time.sleep(0.6)
     if pScore > 21:
         print ("you are BUST so the Dealer wins")
+        bet = 0
+        print("you now have", chips)
     elif pScore == 21 and len (pCards) == 2:
         print("YOU WIN")
+        chips = chips + bet * 2.5
+        bet = 0
+        print("you now have", chips)
     else:
         if pScore > cScore:
             print("YOU WIN")
+            chips = chips + bet * 2
+            bet = 0
+            print("you now have", chips) 
         elif cScore > 21:
             print("YOU WIN")
+            chips = chips + bet*2
+            bet = 0
+            print("you now have", chips)
         else:
             print("YOU LOSE to the dealer")
+            bet = 0
+            print("you now have", chips, "chips")
 
     
 
+def placeBet(money):
+    #calling chips money just so i have summat different in function
+    print("you have", money, "chips")
+    time.sleep(0.4)
+    print("how much would you like to bet?")
+    done = False
+    while done == False:
+        try:
+            stake = int(input())
+            done = True
+        except ValueError:
+            print("you didn't enter a number")
+            done = False
+    print ("you have placed a bet of", stake)
+    money = money - stake
+    return money, stake
 
-print()
-blackjack()
+
+    
+chips, bet = 100, 0
+print("NOTE: IF TIE, DEALER WINS BY DEFAULT")
+#blackjack()
