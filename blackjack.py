@@ -234,4 +234,4 @@ def placeBet(money):
     
 chips, bet = 100, 0
 print("NOTE: IF TIE, DEALER WINS BY DEFAULT")
-#blackjack()
+blackjack()
