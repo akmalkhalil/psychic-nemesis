@@ -16,13 +16,24 @@ class Deck:
         cardsDict[len(cardsDict) + 1] = 'K' + suits[h]
 
     def randCard(self):
-        return self.cardsDict[random.randint(1, 52)]
+        working = True
+        while working:
+            try:
+                randNum = random.randint(1,52)
+                working = False
+            except KeyError:
+                pass
+        return self.cardsDict[randNum], randNum
+    def remCard(self,card):
+        #(self.cardsDict).pop(card)
+        del self.cardsDict[card]
 deck1 = Deck()
 
 
 def deal(deck):
     if isinstance(deck, Deck):
-        dealt = deck.randCard()
+        dealt, randNum = deck.randCard()
+        deck1.remCard(randNum)
         return dealt
     else:
         return 'death'
@@ -248,11 +259,21 @@ print("WELCOME TO BLACKJACK")
 time.sleep(0.4)
 
 while True :
+    print('there are', len(deck1.cardsDict), 'cards left')
+    #get rid of this line when done
     blackjack()
     if chips < 20:
         print("you no longer have any chips")
+        break
+    if len(deck1.cardsDict) < 10:
+        print("sorry there are not enough cards left in this deck")
+        time.sleep(0.3)
+        print("you  have", chips, "chips remaining")
         break
     
 #now how to get multiplayer?????
 #i seem to get a J straight if my score is 14
     #it's just happened 3 times in a row
+
+
+
