@@ -20,10 +20,12 @@ class Deck:
         while working:
             try:
                 randNum = random.randint(1,52)
-                working = False
+                if randNum in self.cardsDict:
+                    working = False
+                    return self.cardsDict[randNum], randNum
             except KeyError:
                 pass
-        return self.cardsDict[randNum], randNum
+        
     def remCard(self,card):
         #(self.cardsDict).pop(card)
         del self.cardsDict[card]
@@ -33,7 +35,7 @@ deck1 = Deck()
 def deal(deck):
     if isinstance(deck, Deck):
         dealt, randNum = deck.randCard()
-        deck1.remCard(randNum)
+        deck.remCard(randNum)
         return dealt
     else:
         return 'death'
