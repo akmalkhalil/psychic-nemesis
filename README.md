@@ -8,10 +8,11 @@ in my version in import a class i've created called <i>Deck</i> which can do a c
 
 <b>todo:</b>
 <ul>
-<li>allow multiple players to play against the dealer at once</li>
 <li>get a life</li>
 <li>add GUI</li>
 <li>images for cards?</li>
+<li>play across LAN (purple dinosaur'sorking in this)</li>
+<li> play over the internet </li>
 <br/>
 <li>come up with another game to make. once i've done the GUI, i won't have much left for blackjack</li>
 <li></li>
