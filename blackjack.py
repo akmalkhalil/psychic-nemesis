@@ -7,6 +7,7 @@ players = [['playerNum', 'hand', 'chips', 'bet', 'score']]
 class Deck:
     suits = ('♠', '❤', '♣', '♦')
     numOfDecks = 2
+    #this will be a parameter of __init__
     cardsDict = {}
     for h in range (4*numOfDecks):
         cardsDict[len(cardsDict)+1] = 'A' + suits[h%4]
@@ -19,7 +20,7 @@ class Deck:
         working = True
         while working:
             try:
-                randNum = random.randint(1,52)
+                randNum = random.randint(1,len(self.cardsDict))
                 if randNum in self.cardsDict:
                     working = False
                     return self.cardsDict[randNum], randNum
@@ -40,7 +41,8 @@ def numOfPlayers():
             print("you didn't enter an interger")
     for i in range(n):
         players.append(['player'+str(i+1), 'I\'ll do the hand here', 100, 0, 0])
-        print(players[i+1], 'has been created')
+        #print(players[i+1], 'has been created')
+    playerNames()
 def initHand(deck):
     for i in range(1,len(players)):
         players[i][1] = [deal(deck),deal(deck)]
@@ -103,6 +105,7 @@ def sumVals(cards, user):
 def blackjack():
     global players
     print()
+    print("NEW HAND")
     time.sleep(0.3)
     for i in range(1, len(players)):
         print(players[i][0], ':')
@@ -126,6 +129,8 @@ def blackjack():
             print("your score therefore is:" , players[i][4])
             if players[i][4] > 21:
                 print ("BUST")
+            if players[i][4] == 21:
+                print("you must stick with 21")
         print()
         print()
     cHand, cPoints = comBlackjack()
@@ -244,7 +249,19 @@ def placeBet(money):
     money = money - stake
     return money, stake
     
-#chips, bet = 100, 0
+
+
+def playerNames():
+    for i in range(1, len(players)):
+        print('enter '+(players[i][0])+'\'s name?')
+        name = input()
+        players[i][0] = name
+        print("welcome to the game " + name)
+        print()
+#need to define function before main progeam thing
+
+
+
 print("this crappy game was created by Akmal Khalil")
 print("NOTE: IF TIE, DEALER WINS BY DEFAULT")
 print("MINIMUM BET IS 20")
@@ -260,18 +277,20 @@ while True :
     blackjack()
     time.sleep(0.5)
 ##    if chips < 20:
-##        print("you no longer have any chips")
+##        print("you no longer have enough chips to place a bet")
 ##        break
     #great now i've got a problem here
     #apart from this it's working
-    if len(deck1.cardsDict) < 10:
+    if len(deck1.cardsDict) < (len(players)*5):
         print("sorry there are not enough cards left in this deck")
         time.sleep(0.3)
         print("you  have", chips, "chips remaining")
         break
 
 
-#purple dinosaur/blind carbon copy(dnt knw what his handle on github is) has sent me a thing for multiplayer on multiple omputers
+
+    
+#purple dinosaur has sent me a thing for multiplayer on multiple omputers
 #he wanted to play each screen, back to back
 # like battleships
 #i should make a battleships game
@@ -281,4 +300,15 @@ while True :
 #bug
 #if player runs out of chips they can still place bets
 #need to figure out where to correct this
-#but also need to stick this up on GitHub
+
+#well it's been brought to my attention that i should probably keep allow...
+#...the players to addd their names
+#shouldn't be too dificult
+#i mean it's pretty much hello world all over again.
+
+
+#k dun that
+# one thing i need to sort out is the dealer AceVal
+#currently ace = 1 unless he has two cards
+#what i want to do is sosrt him out so that it'd be the best val of A
+#otherwise (s)he's sticking on 6+A or above if that's the 1st hand
