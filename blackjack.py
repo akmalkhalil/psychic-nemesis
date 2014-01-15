@@ -3,18 +3,18 @@ BLACKJACK GAME
 Author: Akmal Khalil
 """
 import time, random
-
+players = [['playerNum', 'hand', 'chips', 'bet', 'score']]
 class Deck:
     suits = ('♠', '❤', '♣', '♦')
+    numOfDecks = 2
     cardsDict = {}
-    for h in range (4):
-        cardsDict[len(cardsDict)+1] = 'A' + suits[h]
+    for h in range (4*numOfDecks):
+        cardsDict[len(cardsDict)+1] = 'A' + suits[h%4]
         for i in range (len(cardsDict) + 1 , len(cardsDict)+10 , 1):
-            cardsDict [i] = str(i%13) + suits[h]
-        cardsDict[len(cardsDict) + 1] = 'J' + suits[h]
-        cardsDict[len(cardsDict) + 1] = 'Q' + suits[h]
-        cardsDict[len(cardsDict) + 1] = 'K' + suits[h]
-
+            cardsDict [i] = str(i%13) + suits[h%4]
+        cardsDict[len(cardsDict) + 1] = 'J' + suits[h%4]
+        cardsDict[len(cardsDict) + 1] = 'Q' + suits[h%4]
+        cardsDict[len(cardsDict) + 1] = 'K' + suits[h%4]
     def randCard(self):
         working = True
         while working:
@@ -25,12 +25,25 @@ class Deck:
                     return self.cardsDict[randNum], randNum
             except KeyError:
                 pass
-        
     def remCard(self,card):
         #(self.cardsDict).pop(card)
         del self.cardsDict[card]
 deck1 = Deck()
 
+def numOfPlayers():
+    while True:
+        print("how many players will there be")
+        try:
+            n = int(input())
+            break
+        except ValueError:
+            print("you didn't enter an interger")
+    for i in range(n):
+        players.append(['player'+str(i+1), 'I\'ll do the hand here', 100, 0, 0])
+        print(players[i+1], 'has been created')
+def initHand(deck):
+    for i in range(1,len(players)):
+        players[i][1] = [deal(deck),deal(deck)]
 
 def deal(deck):
     if isinstance(deck, Deck):
@@ -54,9 +67,6 @@ def getValue(card):
         return x
     else:
         return 'death'
-
-
-
 
 def aceVal():
     print (" do you want the ace to be 11 or 1")
@@ -90,46 +100,39 @@ def sumVals(cards, user):
     else:
         return 'death'
 
-    
 def blackjack():
-    global chips, bet
+    global players
     print()
-    print("Whats your name")
-    player = input()
-    time.sleep(0.5)
-    print ("Hello " +player)
-    player = 'player'
-    #that't to stop them typing 'com' although i myt make that default
-    time.sleep(0.2)
-    hand = [deal(deck1), deal(deck1)]
-    chips, bet = placeBet(chips)
-    print ("Your hand is", hand)
-    time.sleep(0.5)
-    points = sumVals(hand, player)
-    print("your score therefore is:" , points)
-    time.sleep(0.5)
-    stand = False
-    if points == 21:
-        stand = True
-        print("WINNER WINNER, CHICKEN DINENR")
-    while stand == False and points < 21:
-        stand = hit(hand, stand)
+    time.sleep(0.3)
+    for i in range(1, len(players)):
+        print(players[i][0], ':')
+        players[i][2],players[i][3] = placeBet(players[i][2])
+        initHand(deck1)
+        print ("Your hand is", players[i][1])
         time.sleep(0.5)
-        print ("Your hand is", hand)
-        points = sumVals(hand,player)
+        players[i][4] = sumVals(players[i][1], '')
+        print("your score therefore is:" , players[i][4])
         time.sleep(0.5)
-        print("your score therefore is:" , points)
-        if points > 21:
-            print ("BUST")
-    print()
-    print()
+        stand = False
+        if players[i][4] == 21:
+            stand = True
+            print("WINNER WINNER, CHICKEN DINENR")
+        while stand == False and players[i][4] < 21:
+            stand = hit(players[i][1], stand)
+            time.sleep(0.5)
+            print ("Your hand is", players[i][1])
+            players[i][4] = sumVals(players[i][1],'')
+            time.sleep(0.5)
+            print("your score therefore is:" , players[i][4])
+            if players[i][4] > 21:
+                print ("BUST")
+        print()
+        print()
     cHand, cPoints = comBlackjack()
-    whoWins(hand, cHand, points, cPoints)
-        
-    
+    whoWins(cHand,cPoints)    
     
 def hit(cards,thingy):
-    #the thingy is going to be stand but i want parameter and argument to be dif
+    #the thingy is going to be stand but i want parameter and argument to be different
     print ("""would you like to:
           (1)hit
           (2)stand""")
@@ -149,7 +152,6 @@ def hit(cards,thingy):
     except ValueError:
         print("i dont think you typed in a number")
         return False
-    
     
 def comBlackjack():
     print("now it's the computers  turn")
@@ -174,54 +176,50 @@ def comBlackjack():
                 dealt = deal(deck1)
                 hand.append(dealt)
                 print("the hand now is", hand)
-        
-              
         time.sleep(1)
     return hand, points
     
-
-    
-def whoWins(pCards, cCards, pScore, cScore):
-    #p for player
-    #c for computer
-    global bet, chips
+def whoWins(cCards, cScore):
+    global players
     print()
     print()
     print()
     print()
     time.sleep(1)
-    print ('Your hand is:')
-    print(pCards)
-    time.sleep(0.5)
+    for i in range (1, len(players)):
+        print (players[i][0], ' hand is:')
+        print(players[i][1])
+        time.sleep(0.5)
     print('The Dealers hand is:')
     print(cCards)
     time.sleep(0.6)
-    if pScore > 21:
-        print ("you are BUST so the Dealer wins")
-        bet = 0
-        print("you now have", chips, 'chips')
-    elif pScore == 21 and len (pCards) == 2:
-        print("YOU WIN")
-        chips = chips + bet * 2.5
-        bet = 0
-        print("you now have", chips,'chips')
-    else:
-        if pScore > cScore:
+    for i in range(1, len(players)):
+        print()
+        print(players[i][0], ':')
+        if players[i][4] > 21:
+            print ("you are BUST so the Dealer wins")
+            players[i][3] = 0
+            print("you now have", players[i][2], 'chips')
+        elif players[i][4] == 21 and len (players[i][1]) == 2:
             print("YOU WIN")
-            chips = chips + bet * 2
-            bet = 0
-            print("you now have", chips, 'chips') 
-        elif cScore > 21:
-            print("YOU WIN")
-            chips = chips + bet*2
-            bet = 0
-            print("you now have", chips, 'chips')
+            players[i][2] = players[i][2] + players[i][3] * 2.5
+            players[i][3] = 0
+            print("you now have", players[i][2],'chips')
         else:
-            print("YOU LOSE to the dealer")
-            bet = 0
-            print("you now have", chips, "chips")
-
-    
+            if players[i][4] > cScore:
+                print("YOU WIN")
+                players[i][2] = players[i][2] + players[i][3] * 2
+                players[i][3] = 0
+                print("you now have", players[i][2], 'chips') 
+            elif cScore > 21:
+                print("YOU WIN")
+                players[i][2] = players[i][2] + players[i][3]*2
+                players[i][3] = 0
+                print("you now have", players[i][2], 'chips')
+            else:
+                print("YOU LOSE to the dealer")
+                players[i][3] = 0
+                print("you now have", players[i][2], "chips")
 
 def placeBet(money):
     #calling chips money just so i have summat different in function
@@ -245,10 +243,8 @@ def placeBet(money):
     print ("you have placed a bet of", stake)
     money = money - stake
     return money, stake
-
-
     
-chips, bet = 100, 0
+#chips, bet = 100, 0
 print("this crappy game was created by Akmal Khalil")
 print("NOTE: IF TIE, DEALER WINS BY DEFAULT")
 print("MINIMUM BET IS 20")
@@ -259,23 +255,30 @@ for i in range(5):
 time.sleep(0.8)
 print("WELCOME TO BLACKJACK")
 time.sleep(0.4)
-
+numOfPlayers()
 while True :
-    print('there are', len(deck1.cardsDict), 'cards left')
-    #get rid of this line when done
     blackjack()
-    if chips < 20:
-        print("you no longer have any chips")
-        break
+    time.sleep(0.5)
+##    if chips < 20:
+##        print("you no longer have any chips")
+##        break
+    #great now i've got a problem here
+    #apart from this it's working
     if len(deck1.cardsDict) < 10:
         print("sorry there are not enough cards left in this deck")
         time.sleep(0.3)
         print("you  have", chips, "chips remaining")
         break
-    
-#now how to get multiplayer?????
-#i seem to get a J straight if my score is 14
-    #it's just happened 3 times in a row
 
 
+#purple dinosaur/blind carbon copy(dnt knw what his handle on github is) has sent me a thing for multiplayer on multiple omputers
+#he wanted to play each screen, back to back
+# like battleships
+#i should make a battleships game
 
+ 
+
+#bug
+#if player runs out of chips they can still place bets
+#need to figure out where to correct this
+#but also need to stick this up on GitHub
