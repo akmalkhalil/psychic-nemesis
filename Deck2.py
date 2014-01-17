@@ -23,9 +23,17 @@ class Deck(object):
         del(i)
 
     def randCard(self):
-        return self.cardsDict[random.randint(1, 52)]
+        working = True
+        while working:
+            try:
+                randNum = random.randint(1,len(self.cardsDict))
+                if randNum in self.cardsDict:
+                    working = False
+                    return self.cardsDict[randNum], randNum
+            except KeyError:
+                pass
 
-    def kill(self):
+    def kill(slf):
         try:
             self.cardsDict.clear()
             self.facesDict.clear()
