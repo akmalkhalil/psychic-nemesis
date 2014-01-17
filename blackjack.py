@@ -29,7 +29,7 @@ players = [['playerNum', 'hand', 'chips', 'bet', 'score']]
 ##    def remCard(self,card):
 ##        #(self.cardsDict).pop(card)
 ##        del self.cardsDict[card]
-deck1 = DeckV2.Deck(2)
+deck1 = Deck2.Deck(2)
 
 def numOfPlayers():
     while True:
@@ -48,7 +48,7 @@ def initHand(deck):
         players[i][1] = [deal(deck),deal(deck)]
 
 def deal(deck):
-    if isinstance(deck, DeckV2.Deck):
+    if isinstance(deck, Deck2.Deck):
         dealt, randNum = deck.randCard()
         deck.remCard(randNum)
         return dealt
