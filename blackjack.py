@@ -2,34 +2,34 @@
 BLACKJACK GAME
 Author: Akmal Khalil
 """
-import time, random
+import time, random, Deck2
 players = [['playerNum', 'hand', 'chips', 'bet', 'score']]
-class Deck:
-    suits = ('♠', '❤', '♣', '♦')
-    numOfDecks = 2
-    #this will be a parameter of __init__
-    cardsDict = {}
-    for h in range (4*numOfDecks):
-        cardsDict[len(cardsDict)+1] = 'A' + suits[h%4]
-        for i in range (len(cardsDict) + 1 , len(cardsDict)+10 , 1):
-            cardsDict [i] = str(i%13) + suits[h%4]
-        cardsDict[len(cardsDict) + 1] = 'J' + suits[h%4]
-        cardsDict[len(cardsDict) + 1] = 'Q' + suits[h%4]
-        cardsDict[len(cardsDict) + 1] = 'K' + suits[h%4]
-    def randCard(self):
-        working = True
-        while working:
-            try:
-                randNum = random.randint(1,len(self.cardsDict))
-                if randNum in self.cardsDict:
-                    working = False
-                    return self.cardsDict[randNum], randNum
-            except KeyError:
-                pass
-    def remCard(self,card):
-        #(self.cardsDict).pop(card)
-        del self.cardsDict[card]
-deck1 = Deck()
+##class Deck:
+##    suits = ('♠', '❤', '♣', '♦')
+##    numOfDecks = 2
+##    #this will be a parameter of __init__
+##    cardsDict = {}
+##    for h in range (4*numOfDecks):
+##        cardsDict[len(cardsDict)+1] = 'A' + suits[h%4]
+##        for i in range (len(cardsDict) + 1 , len(cardsDict)+10 , 1):
+##            cardsDict [i] = str(i%13) + suits[h%4]
+##        cardsDict[len(cardsDict) + 1] = 'J' + suits[h%4]
+##        cardsDict[len(cardsDict) + 1] = 'Q' + suits[h%4]
+##        cardsDict[len(cardsDict) + 1] = 'K' + suits[h%4]
+##    def randCard(self):
+##        working = True
+##        while working:
+##            try:
+##                randNum = random.randint(1,len(self.cardsDict))
+##                if randNum in self.cardsDict:
+##                    working = False
+##                    return self.cardsDict[randNum], randNum
+##            except KeyError:
+##                pass
+##    def remCard(self,card):
+##        #(self.cardsDict).pop(card)
+##        del self.cardsDict[card]
+deck1 = DeckV2.Deck(2)
 
 def numOfPlayers():
     while True:
@@ -48,7 +48,7 @@ def initHand(deck):
         players[i][1] = [deal(deck),deal(deck)]
 
 def deal(deck):
-    if isinstance(deck, Deck):
+    if isinstance(deck, DeckV2.Deck):
         dealt, randNum = deck.randCard()
         deck.remCard(randNum)
         return dealt
@@ -260,6 +260,10 @@ def playerNames():
         print()
 #need to define function before main progeam thing
 
+def newDeck():
+    print ("I'm now creating a new deck")
+    #if i do summat here then i'll have to change it every where
+    #need to think what i'm gonna do here first
 
 
 print("this crappy game was created by Akmal Khalil")
@@ -301,14 +305,9 @@ while True :
 #if player runs out of chips they can still place bets
 #need to figure out where to correct this
 
-#well it's been brought to my attention that i should probably keep allow...
-#...the players to addd their names
-#shouldn't be too dificult
-#i mean it's pretty much hello world all over again.
 
+#bug:
+#AceVal('com')
+#if dealer recieves 2 aces
+#if dealer recieves 6 to 13 & A
 
-#k dun that
-# one thing i need to sort out is the dealer AceVal
-#currently ace = 1 unless he has two cards
-#what i want to do is sosrt him out so that it'd be the best val of A
-#otherwise (s)he's sticking on 6+A or above if that's the 1st hand
