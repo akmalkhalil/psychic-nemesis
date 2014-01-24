@@ -64,8 +64,10 @@ def getValue(card):
             else:
                 x = 10
         except ValueError:
-            y = {'A' : 1 , 'K' : 13 , 'Q' : 12 , 'J' : 11}
-            x = y[card[0]]
+            if card[0] == 'A':
+                return 1
+            else:
+                return 10
         return x
     else:
         return 'death'
@@ -75,29 +77,33 @@ def aceVal():
     done = False
     while done == False:
         opt = input()
-        if (opt == '11') or (opt == '1') :
+        if (opt == '11') or (opt == '1'):
             done = True
             return opt
         else:
             print("you didn't enter a 11 or 1")
             done = False
 def sumVals(cards, user):
+    #can get rid of that user bit now
     score = 0
     if isinstance(cards, list):
         for i in range(len(cards)):
             value = getValue(cards[i])
             if 1<value<11:
                 score += value
-            elif value > 10 :
-                score += 10
+##            elif value > 10 :
+##                score += 10
             elif value == 1:
-                if user == 'com':
-                    if len(cards) == 2:
-                        score += 11
-                    else:
-                        score += 1
-                else:
-                    score += int(aceVal())
+                #i'm gonna make another sumVals() for com
+                score += int(aceVal())
+##                if user == 'com':
+##                    if len(cards) == 2:
+##                        score += 11
+##                    else:
+##                        score += 1
+##                    
+##                else:
+##                    score += int(aceVal())
         return score
     else:
         return 'death'
@@ -266,10 +272,110 @@ def newDeck():
     #need to think what i'm gonna do here first
 
 
+
+def sumValsCom(cards):
+    score = 0
+    cardVals = []
+    if isinstance(cards, list):
+        for i in range(len(cards)):
+            cardVals.append(getValue(cards[i]))
+        cardVals.sort()
+        if 1 in cardVals:
+            #pass
+            #this is where it get's a litle complicated
+            #k my plan is to go through every possibility when com has an ace
+            #OK 5 possibilities with opening hand
+            #can cut them down using OR
+            #ok enuf with the comments i should start programming
+            if len(cardVals) == 2:
+                if cardVals[1] == 1:#ie ace and ace
+                    return 12 # or 2???
+                elif cardVals[1] > 9:#can get rid of equal sign if wanted
+                    return 21
+                else:
+                    return cardVals[1] + 1
+                    #but wouldn't u stick if u had a 9 (maybe if u had an 8 aswell)
+            else:
+                #need to go through the possibilities here
+                #got a sum of ten then an ace
+                #got loads of low nums
+                #just think when ace = 11 then do else ace = 1
+                aces = []
+                noAScore = 0
+                for i in range(cardVals.count(1)):
+                    aces.append(1)
+                    cardVals.remove(1)
+                for i in range(len(cardVals)):
+                    noAScore += cardVals[i]
+                    
+                #k now we add up the remaining cards
+                    #need to sort out the bloody picture cards
+                    #instead of 11/12/13 im assiging them to ten
+
+                        
+                if max(cardVals)==10:
+                    for i in range(len(aces)):
+                        noAScore += 1
+                    return noAScore
+                elif 11>sum(cardVals)>7:
+                    if len(aces) == 1:
+                        return noAScore+11
+                    elif len(aces) == 2 and sum(cardVals) != 10:
+                        return noAScore +12
+                    elif len(aces) > 2:
+                        return noAScore + len(aces)
+                else:
+                    return noAScore + len(aces)
+                #boom
+                #straight programming for 20 mins
+                #managed to write 10 lines
+                #now i think that's all the possibilities of having aces
+                #maybe get someone to run through it all and check
+                #just gonna do normal sumVals() when no aces
+                #had an idea for normal AceVal()
+                #what if i show the user the possibilities that are < 21
+                #they then choose to hit or stand
+                #may be difficult with multiple aces but i can crack that
+                #k gonna take a break then debug and add for when no aces
+                # then stick this in full program
+                #more testing
+                #stick it online
+                #then sort out the dealing coz the randCard() in deck is annoying me
+                #k break time
+
+                #well that break was i bit longer than expected
+                #umm i've already dun that else part
+                #so i think i'm done
+                        
+
+                
+                
+                
+        else:
+            return sumVals(cards, 'com')
+        #probably need to check if this part'll work
+        #umm probs should return it outside the for loop
+        #actually i think the return will exit the function
+
+            
+#use these for testing
+hand1 = ['A♣', '8♠']
+hand1_1 = ['8♠','A♣']
+hand2 = ['A❤','A❤']
+hand2_5 = ['A❤' , 'Q❤']
+hand3 = ['A❤', 'K❤', '6❤','A❤']
+hand4 = ['A♣', '8♠', '9♠']
+hand5 = ['6♣' , '3♣', 'A♣']
+hand6 = ['K❤', '6❤','3♣']
+
+deadPlayers = []
+#this is when they run out of chips
+#now i need a function for it
+
 print("this crappy game was created by Akmal Khalil")
 print("NOTE: IF TIE, DEALER WINS BY DEFAULT")
 print("MINIMUM BET IS 20")
-print("This deck begins with", len(deck1.cardsDict), 'cards')
+#print("This deck begins with", len(deck1.cardsDict), 'cards')
 for i in range(5):
     time.sleep(1)
     print(deck1.suits)
