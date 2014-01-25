@@ -25,7 +25,7 @@ class Deck(object):
         working = True
         while working:
             try:
-                randNum = random.randint(1,len(self.cardsList))
+                randNum = random.randint(0,len(self.cardsList)-1)
                 working = False
                 return self.cardsList[randNum], randNum
             except KeyError:
