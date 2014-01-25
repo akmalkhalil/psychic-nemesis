@@ -9,15 +9,15 @@ class Deck(object):
     del(i)
     suits = ('♠', '❤', '♣', '♦')
     def __init__(self,n):
-        #just checked out classes on codecademy and they say use this initialise thing
-        self.cardsDict = {}
+        self.cardsList = []
+        #still called dict even though its an array
         for h in range (4*n):
-            self.cardsDict[len(self.cardsDict)+1] = 'A' + self.suits[h%4]
-            for i in range (len(self.cardsDict) + 1 , len(self.cardsDict)+10 , 1):
-                self.cardsDict [i] = str(i%13) + self.suits[h%4]
-            self.cardsDict[len(self.cardsDict) + 1] = 'J' + self.suits[h%4]
-            self.cardsDict[len(self.cardsDict) + 1] = 'Q' + self.suits[h%4]
-            self.cardsDict[len(self.cardsDict) + 1] = 'K' + self.suits[h%4]   
+            self.cardsList.append('A' + self.suits[h%4])
+            for i in range (len(self.cardsList) + 1 , len(self.cardsList)+10 , 1):
+                self.cardsList.append(str(i%13) + self.suits[h%4])
+            self.cardsList.append('J' + self.suits[h%4])
+            self.cardsList.append('Q' + self.suits[h%4])
+            self.cardsList.append('K' + self.suits[h%4])
 
         del(h)
         del(i)
@@ -26,24 +26,23 @@ class Deck(object):
         working = True
         while working:
             try:
-                randNum = random.randint(1,len(self.cardsDict))
-                if randNum in self.cardsDict:
-                    working = False
-                    return self.cardsDict[randNum], randNum
+                randNum = random.randint(1,len(self.cardsList))
+                working = False
+                return self.cardsList[randNum], randNum
             except KeyError:
                 pass
 
     def kill(slf):
         try:
-            self.cardsDict.clear()
-            self.facesDict.clear()
+            self.cardsList.clear()
+            self.facesList.clear()
             print (self , 'has been killed')
         except:
             print("why won't you die")
 
     def remCard(self,card):
         #(self.cardsDict).pop(card)
-        del self.cardsDict[card]
+        del self.cardsList[card]
     
                        
 
