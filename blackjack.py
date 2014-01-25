@@ -4,31 +4,6 @@ Author: Akmal Khalil
 """
 import time, random, Deck2
 players = [['playerNum', 'hand', 'chips', 'bet', 'score']]
-##class Deck:
-##    suits = ('♠', '❤', '♣', '♦')
-##    numOfDecks = 2
-##    #this will be a parameter of __init__
-##    cardsDict = {}
-##    for h in range (4*numOfDecks):
-##        cardsDict[len(cardsDict)+1] = 'A' + suits[h%4]
-##        for i in range (len(cardsDict) + 1 , len(cardsDict)+10 , 1):
-##            cardsDict [i] = str(i%13) + suits[h%4]
-##        cardsDict[len(cardsDict) + 1] = 'J' + suits[h%4]
-##        cardsDict[len(cardsDict) + 1] = 'Q' + suits[h%4]
-##        cardsDict[len(cardsDict) + 1] = 'K' + suits[h%4]
-##    def randCard(self):
-##        working = True
-##        while working:
-##            try:
-##                randNum = random.randint(1,len(self.cardsDict))
-##                if randNum in self.cardsDict:
-##                    working = False
-##                    return self.cardsDict[randNum], randNum
-##            except KeyError:
-##                pass
-##    def remCard(self,card):
-##        #(self.cardsDict).pop(card)
-##        del self.cardsDict[card]
 deck1 = Deck2.Deck(2)
 
 def numOfPlayers():
@@ -41,7 +16,6 @@ def numOfPlayers():
             print("you didn't enter an interger")
     for i in range(n):
         players.append(['player'+str(i+1), 'I\'ll do the hand here', 100, 0, 0])
-        #print(players[i+1], 'has been created')
     playerNames()
 def initHand(deck):
     for i in range(1,len(players)):
@@ -253,7 +227,7 @@ def playerNames():
         players[i][0] = name
         print("welcome to the game " + name)
         print()
-#need to define function before main progeam thing
+#need to define function before main program thing
 
 def newDeck():
     print ("I'm now creating a new deck")
@@ -300,7 +274,7 @@ def sumValsCom(cards):
                 else:
                     return noAScore + len(aces)       
         else:
-            return sumVals(cards, 'com')
+            return sumVals(cards)
 
 deadPlayers = []
 #this is when they run out of chips
@@ -309,7 +283,7 @@ deadPlayers = []
 print("this crappy game was created by Akmal Khalil")
 print("NOTE: IF TIE, DEALER WINS BY DEFAULT")
 print("MINIMUM BET IS 20")
-#print("This deck begins with", len(deck1.cardsDict), 'cards')
+#print("This deck begins with", len(deck1.cardsList), 'cards')
 for i in range(5):
     time.sleep(1)
     print(deck1.suits)
@@ -325,7 +299,7 @@ while True :
 ##        break
     #great now i've got a problem here
     #apart from this it's working
-    if len(deck1.cardsDict) < (len(players)*5):
+    if len(deck1.cardsList) < (len(players)*5):
         print("sorry there are not enough cards left in this deck")
         time.sleep(0.3)
         print("you  have", chips, "chips remaining")
