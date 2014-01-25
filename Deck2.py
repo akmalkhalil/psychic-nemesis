@@ -10,7 +10,6 @@ class Deck(object):
     suits = ('♠', '❤', '♣', '♦')
     def __init__(self,n):
         self.cardsList = []
-        #still called dict even though its an array
         for h in range (4*n):
             self.cardsList.append('A' + self.suits[h%4])
             for i in range (len(self.cardsList) + 1 , len(self.cardsList)+10 , 1):
