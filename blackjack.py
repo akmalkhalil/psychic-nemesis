@@ -1,10 +1,12 @@
 """
 BLACKJACK GAME
 Author: Akmal Khalil
+
+https://github.com/silenttechy/psychic-nemesis
+NOTE:make sure Deck2 is saved as Deck2 in the same folder as this game
+
 """
 import time, random, Deck2
-players = [['playerNum', 'hand', 'chips', 'bet', 'score']]
-deck1 = Deck2.Deck(2)
 
 def numOfPlayers():
     while True:
@@ -161,7 +163,7 @@ def whoWins(cCards, cScore):
     print()
     time.sleep(1)
     for i in range (1, len(players)):
-        print (players[i][0], ' hand is:')
+        print (players[i][0]+ '\'s hand is:')
         print(players[i][1])
         time.sleep(0.5)
     print('The Dealers hand is:')
@@ -276,14 +278,21 @@ def sumValsCom(cards):
         else:
             return sumVals(cards)
 
-deadPlayers = []
-#this is when they run out of chips
-#now i need a function for it
 
+
+def newDeck():
+    print("a new deck is being created")
+    n = int(input("how manu 52's in this deck"))
+    #basically what multiplied by 52 for the deck
+    #how many decks in the deck
+    #need a better way to phrase this
+    deck1 = Deck2.Deck(n)
+players = [['playerNum', 'hand', 'chips', 'bet', 'score']]
+deck1 = Deck2.Deck(2)
+deadPlayers = []
 print("this crappy game was created by Akmal Khalil")
 print("NOTE: IF TIE, DEALER WINS BY DEFAULT")
 print("MINIMUM BET IS 20")
-#print("This deck begins with", len(deck1.cardsList), 'cards')
 for i in range(5):
     time.sleep(1)
     print(deck1.suits)
@@ -294,30 +303,27 @@ numOfPlayers()
 while True :
     blackjack()
     time.sleep(0.5)
-##    if chips < 20:
-##        print("you no longer have enough chips to place a bet")
-##        break
-    #great now i've got a problem here
-    #apart from this it's working
+
+    for i in range(1,len(players)):
+        if players[i][2] <20:
+            print()
+            print(players[i][0] + ', you no longer have enough chips to play')
+            print()
+            deadPlayers.append(players[i])
+    for i in range(len(deadPlayers)):
+        if deadPlayers[i] in players:
+            players.remove(deadPlayers[i])
     if len(deck1.cardsList) < (len(players)*5):
         print("sorry there are not enough cards left in this deck")
         time.sleep(0.3)
         print("you  have", chips, "chips remaining")
         break
+    if len(players) == 1:
+        print('NO PLAYERS LEFT')
+        break
 
 
 
-    
-#purple dinosaur has sent me a thing for multiplayer on multiple omputers
-#he wanted to play each screen, back to back
-# like battleships
-#i should make a battleships game
 
  
-
-#bug
-#if player runs out of chips they can still place bets
-#need to figure out where to correct this
-
-
 
