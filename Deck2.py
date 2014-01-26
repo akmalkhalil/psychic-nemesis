@@ -31,10 +31,10 @@ class Deck(object):
             except KeyError:
                 pass
 
-    def kill(slf):
+    def kill(self):
         try:
             self.cardsList.clear()
-            self.facesList.clear()
+            self.facesDict.clear()
             print (self , 'has been killed')
         except:
             print("why won't you die")
@@ -42,14 +42,5 @@ class Deck(object):
     def remCard(self,card):
         #(self.cardsDict).pop(card)
         del self.cardsList[card]
-    
-                       
 
-
-##deck1 = Deck(1)
-##deck2 = Deck(2)
-##print ("the object 'deck1' has been created")
-##print ("the object 'deck2' has been created")
-
-
-
+        
