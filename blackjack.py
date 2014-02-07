@@ -316,7 +316,10 @@ while True :
     if len(deck1.cardsList) < (len(players)*5):
         print("sorry there are not enough cards left in this deck")
         time.sleep(0.3)
-        print("you  have", chips, "chips remaining")
+        for i in range(1,len(players)):
+            print(players[i][0])
+            print("you have ",players[i][2], "chips remaining")
+            time.sleep(0.2)
         break
     if len(players) == 1:
         print('NO PLAYERS LEFT')
