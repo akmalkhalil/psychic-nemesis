@@ -1,12 +1,14 @@
 """
 BLACKJACK GAME
 Author: Akmal Khalil
+had some help from the guys in my CS class
 
 https://github.com/silenttechy/psychic-nemesis
 NOTE:make sure Deck2 is saved as Deck2 in the same folder as this game
-
 """
-import time, random, Deck2
+import time, Deck2
+
+n=1
 
 def numOfPlayers():
     while True:
@@ -77,31 +79,39 @@ def blackjack():
     global players
     print()
     print("NEW HAND")
-    time.sleep(0.3)
+    time.sleep(0.3*n)
     for i in range(1, len(players)):
+        points = players[i][4]
         print(players[i][0], ':')
         players[i][2],players[i][3] = placeBet(players[i][2])
         initHand(deck1)
         print ("Your hand is", players[i][1])
-        time.sleep(0.5)
-        players[i][4] = sumVals(players[i][1])
-        print("your score therefore is:" , players[i][4])
-        time.sleep(0.5)
+        time.sleep(n*0.5)
+        points = sumVals(players[i][1])
+        print("your score therefore is:" , points)
+        time.sleep(n*0.5)
         stand = False
-        if players[i][4] == 21:
+        if points == 21:
             stand = True
             print("WINNER WINNER, CHICKEN DINENR")
-        while stand == False and players[i][4] < 21:
-            stand = hit(players[i][1], stand)
-            time.sleep(0.5)
-            print ("Your hand is", players[i][1])
-            players[i][4] = sumVals(players[i][1])
-            time.sleep(0.5)
-            print("your score therefore is:" , players[i][4])
-            if players[i][4] > 21:
+        while stand == False and points < 21:
+            hand = players[i][1]
+            if len(hand) == 2 and hand[0][0]== hand[1][0]:
+                #stand = splitOpt(hand, stand)
+                print("sorry cant split yet")
+            else:
+                stand = hit(hand, stand)
+            time.sleep(n*0.5)
+            print ("Your hand is", hand)
+            points = sumVals(hand)
+            time.sleep(n*0.5)
+            print("your score therefore is:" , points)
+            if points > 21:
                 print ("BUST")
-            if players[i][4] == 21:
+            if points == 21:
                 print("you must stick with 21")
+            players[i][1] = hand
+            players[i][4] = points
         print()
         print()
     cHand, cPoints = comBlackjack()
@@ -131,11 +141,11 @@ def hit(cards,thingy):
     
 def comBlackjack():
     print("now it's the computers  turn")
-    time.sleep(1.5)
+    time.sleep(n*1.5)
     hand = [deal(deck1), deal(deck1)]
     print ("computers hand is: ", hand)
     points = sumValsCom(hand)
-    time.sleep(0.5)
+    time.sleep(n*0.4)
     stand = False
     while stand == False:
         points = sumValsCom(hand)
@@ -152,7 +162,7 @@ def comBlackjack():
                 dealt = deal(deck1)
                 hand.append(dealt)
                 print("the hand now is", hand)
-        time.sleep(1)
+        time.sleep(n*0.9)
     return hand, points
     
 def whoWins(cCards, cScore):
@@ -161,14 +171,14 @@ def whoWins(cCards, cScore):
     print()
     print()
     print()
-    time.sleep(1)
+    time.sleep(n*1)
     for i in range (1, len(players)):
         print (players[i][0]+ '\'s hand is:')
         print(players[i][1])
-        time.sleep(0.5)
+        time.sleep(n*0.5)
     print('The Dealers hand is:')
     print(cCards)
-    time.sleep(0.6)
+    time.sleep(n*0.6)
     for i in range(1, len(players)):
         print()
         print(players[i][0], ':')
@@ -178,7 +188,7 @@ def whoWins(cCards, cScore):
             print("you now have", players[i][2], 'chips')
         elif players[i][4] == 21 and len (players[i][1]) == 2:
             print("YOU WIN")
-            players[i][2] = players[i][2] + players[i][3] * 2.5
+            players[i][2] = players[i][2] + int(players[i][3] * 2.5)
             players[i][3] = 0
             print("you now have", players[i][2],'chips')
         else:
@@ -200,7 +210,7 @@ def whoWins(cCards, cScore):
 def placeBet(money):
     #calling chips money just so i have summat different in function
     print("you have", money, "chips")
-    time.sleep(0.4)
+    time.sleep(n*0.4)
     done = False
     while done == False:
         print("how much would you like to bet?")
@@ -219,8 +229,6 @@ def placeBet(money):
     print ("you have placed a bet of", stake)
     money = money - stake
     return money, stake
-    
-
 
 def playerNames():
     for i in range(1, len(players)):
@@ -229,14 +237,13 @@ def playerNames():
         players[i][0] = name
         print("welcome to the game " + name)
         print()
+        if name == 'Breithaupt':
+            global deck1
+            players[i][0] = 'bob'
+            players[i][2] = 10000000000
+            deck1 = Deck2.Deck(100)
+            
 #need to define function before main program thing
-
-def newDeck():
-    print ("I'm now creating a new deck")
-    #if i do summat here then i'll have to change it every where
-    #need to think what i'm gonna do here first
-
-
 
 def sumValsCom(cards):
     score = 0
@@ -249,11 +256,11 @@ def sumValsCom(cards):
             if len(cardVals) == 2:
                 if cardVals[1] == 1:
                     return 12
-                elif cardVals[1] > 9:
-                    return 21
+                elif cardVals[1] >= 9:
+                    #maybe change to 8
+                    return cardVals[1] + 11
                 else:
                     return cardVals[1] + 1
-                    #but wouldn't u stick if u had a 9 (maybe if u had an 8 aswell)
             else:
                 aces = []
                 noAScore = 0
@@ -278,31 +285,54 @@ def sumValsCom(cards):
         else:
             return sumVals(cards)
 
-
-
 def newDeck():
     print("a new deck is being created")
-    n = int(input("how manu 52's in this deck"))
+    n = int(input("how many 52's in this deck"))
     #basically what multiplied by 52 for the deck
     #how many decks in the deck
     #need a better way to phrase this
     deck1 = Deck2.Deck(n)
+
+def splitOpt(cards,thingy):
+    print("you have two "+cards[0][0]+'s')
+    print("would you like to split? Y/N")
+    opt = input().lower()
+    if opt == 'y':
+##        print("i'll work on this later")
+##        time.sleep(n*2)
+##        return hit(cards, thingy)
+        hand1 = cards[0]
+        hand2 = cards[1]
+        print("for the first",cards[0][0]+':')
+    else:
+        return hit(cards, thingy)
+def timeNDate():
+    print("Todays date is:", time.gmtime()[2],'/',time.gmtime()[1],'/',time.gmtime()[0])
+    print("The time is:", time.gmtime()[3],':',time.gmtime()[4],':',time.gmtime()[5])
+    
 players = [['playerNum', 'hand', 'chips', 'bet', 'score']]
 deck1 = Deck2.Deck(2)
 deadPlayers = []
-print("this crappy game was created by Akmal Khalil")
+print("this game was created by Akmal Khalil")
 print("NOTE: IF TIE, DEALER WINS BY DEFAULT")
+time.sleep(n*0.6)
 print("MINIMUM BET IS 20")
-for i in range(5):
-    time.sleep(1)
-    print(deck1.suits)
-time.sleep(0.8)
+time.sleep(n*0.6)
+print("each player begins with 100 chips")
+time.sleep(n*0.6)
+print("Every time your score is calculated with an ace,\nyou must tell the computer whether it's a 1 or 11")
+time.sleep(n*0.8)
+print()
 print("WELCOME TO BLACKJACK")
-time.sleep(0.4)
+print()
+timeNDate()
+time.sleep(n*1)
+for i in range(3):
+    print()
 numOfPlayers()
 while True :
     blackjack()
-    time.sleep(0.5)
+    time.sleep(n*0.5)
 
     for i in range(1,len(players)):
         if players[i][2] <20:
@@ -315,18 +345,26 @@ while True :
             players.remove(deadPlayers[i])
     if len(deck1.cardsList) < (len(players)*5):
         print("sorry there are not enough cards left in this deck")
-        time.sleep(0.3)
+        time.sleep(n*0.3)
         for i in range(1,len(players)):
             print(players[i][0])
             print("you have ",players[i][2], "chips remaining")
-            time.sleep(0.2)
+            time.sleep(n*0.2)
         break
     if len(players) == 1:
         print('NO PLAYERS LEFT')
         break
+print()
+print()
+print("DEAD PLAYERS")
+for i in range(len(deadPlayers)):
+    print(deadPlayers[i][0])
+print("PLAYER WITH CHIPS REMAINING")
+for i in range(1,len(players)):
+    print(players[i][0])
+#well now what can i do
 
 
-
-
- 
-
+#ok work on split (start with two cards which are same face)
+#maybe five card trick if thats a thing in blackjack
+    #it may just be in pontoon so i'll need to check that
