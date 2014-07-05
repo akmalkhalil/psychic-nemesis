@@ -8,9 +8,9 @@ in my version in import a class i've created called <i>Deck</i> which can do a c
 
 <b>todo:</b>
 <ul>
-<li>get a life</li>
 <li>add GUI</li>
 <li>images for cards?</li>
+<li>get a life</li>
 <li>play across LAN (purple dinosaur'sorking in this)</li>
 <li> play over the internet </li>
 <br/>
