@@ -11,12 +11,13 @@ in my version in import a class i've created called <i>Deck</i> which can do a c
 <li>add GUI</li>
 <li>images for cards?</li>
 <li>get a life</li>
-<li>play across LAN (purple dinosaur'sorking in this)</li>
-<li> play over the internet </li>
-<br/>
-<li>come up with another game to make. once i've done the GUI, i won't have much left for blackjack</li>
-<li>thought bout doing battleships but maybe not in psychic nemisis, i'm keeping this for card games</li>
-<li> friends have said do solitaire </li>
-<li> thought about doing go fish cozit's simple </li>
-<li> maybe rummy </li>
+<li>play across LAN (purple dinosaur's working on this)</li>
+<li> play over the internet </li> 
 </ul>
+<br/>
+<p>come up with another game to make. once i've done the GUI, i won't have much left for blackjack<br/>
+thought bout doing battleships but maybe not in psychic nemisis, i'm keeping this for card games<br/>
+friends have said to do solitaire <br/>
+thought about doing go fish becuase it's simple <br/>
+maybe rummy <br/>
+
