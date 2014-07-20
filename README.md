@@ -1,7 +1,7 @@
 psychic-nemesis
 ===============
 
-<b><u>MY FIRST REPO</u></b>
+<b><u>blackjack and other card games</u></b>
 
 <p>blackjack game i've spent my christmas holidays creating<br/>
 in my version in import a class i've created called <i>Deck</i> which can do a couple of other useless things to the class in the program</p>
