@@ -13,7 +13,7 @@ def numOfPlayers():
         
         print("how many players will there be")
         try:
-            n = int(input())
+            n = int(getUserInput())
             #break if n <= 5 else print("You can only have up to 5 players for now")
             if 0 < n <= 5 :
                 break
@@ -58,7 +58,7 @@ def aceVal():
     print (" do you want the ace to be 11 or 1")
     done = False
     while done == False:
-        opt = input()
+        opt = getUserInput()
         if (opt == '11') or (opt == '1'):
             done = True
             return opt
@@ -123,7 +123,7 @@ def hit(cards,thingy):
           (1)hit
           (2)stand""")
     try:
-        opt = int(input())
+        opt = int(getUserInput())
         if 0<opt<3:
             if opt == 1:
                 dealt = deal(deck1)
@@ -215,7 +215,7 @@ def placeBet(money):
     while done == False:
         print("how much would you like to bet?")
         try:
-            stake = int(input())
+            stake = int(getUserInput())
             if stake >= 20 and stake <= money:
                 done = True
             elif stake < 20:
@@ -233,7 +233,7 @@ def placeBet(money):
 def playerNames():
     for i in range(1, len(players)):
         print('enter '+(players[i][0])+'\'s name?')
-        name = input()
+        name = getUserInput()
         players[i][0] = name
         print("welcome to the game " + name)
         print()
@@ -296,7 +296,7 @@ def newDeck():
 def splitOpt(cards,thingy):
     print("you have two "+cards[0][0]+'s')
     print("would you like to split? Y/N")
-    opt = input().lower()
+    opt = getUserInput().lower()
     if opt == 'y':
         print("i'll work on this later")
         time.sleep(2)
@@ -306,7 +306,16 @@ def splitOpt(cards,thingy):
 def timeNDate():
     print("Todays date is:", time.gmtime()[2],'/',time.gmtime()[1],'/',time.gmtime()[0])
     print("The time is:", time.gmtime()[3],':',time.gmtime()[4],':',time.gmtime()[5])
-    
+
+def getUserInput():
+    inp = input()
+    if inp == 'time':
+        timeNDate()
+    elif inp == 'UP UP DOWN DOWN LEFT RIGHT LEFT RIGHT B A':
+        print('KONAMI CODE ENTERED')
+        print('hopefully in the future there\'ll be 1000 added to your player')
+    return inp
+
 players = [['playerNum', 'hand', 'chips', 'bet', 'score']]
 deadPlayers = []
 print("this game was created by Akmal Khalil")
