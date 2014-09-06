@@ -8,19 +8,23 @@ NOTE:make sure Deck2 is saved as Deck2 in the same folder as this game
 """
 import time, Deck2
 
-n=1
-
 def numOfPlayers():
     while True:
+        
         print("how many players will there be")
         try:
             n = int(input())
-            break
+            #break if n <= 5 else print("You can only have up to 5 players for now")
+            if 0 < n <= 5 :
+                break
+            else:
+                print("you can only have 1 to 5 players for now")
         except ValueError:
             print("you didn't enter an interger")
     for i in range(n):
         players.append(['player'+str(i+1), 'I\'ll do the hand here', 100, 0, 0])
     playerNames()
+    return n+1
 def initHand(deck):
     for i in range(1,len(players)):
         players[i][1] = [deal(deck),deal(deck)]
@@ -79,39 +83,35 @@ def blackjack():
     global players
     print()
     print("NEW HAND")
-    time.sleep(0.3*n)
+    time.sleep(0.3)
     for i in range(1, len(players)):
-        points = players[i][4]
         print(players[i][0], ':')
         players[i][2],players[i][3] = placeBet(players[i][2])
         initHand(deck1)
         print ("Your hand is", players[i][1])
-        time.sleep(n*0.5)
-        points = sumVals(players[i][1])
-        print("your score therefore is:" , points)
-        time.sleep(n*0.5)
+        time.sleep(0.5)
+        players[i][4] = sumVals(players[i][1])
+        print("your score therefore is:" , players[i][4])
+        time.sleep(0.5)
         stand = False
-        if points == 21:
+        if players[i][4] == 21:
             stand = True
             print("WINNER WINNER, CHICKEN DINENR")
-        while stand == False and points < 21:
-            hand = players[i][1]
-            if len(hand) == 2 and hand[0][0]== hand[1][0]:
-                #stand = splitOpt(hand, stand)
-                print("sorry cant split yet")
+        while stand == False and players[i][4] < 21:
+            if len(players[i][1]) == 2 and players[i][1][0][0]==players[i][1][1][0]:
+                stand = splitOpt(players[i][1], stand)
+                #need to add the opt to split here
             else:
-                stand = hit(hand, stand)
-            time.sleep(n*0.5)
-            print ("Your hand is", hand)
-            points = sumVals(hand)
-            time.sleep(n*0.5)
-            print("your score therefore is:" , points)
-            if points > 21:
+                stand = hit(players[i][1], stand)
+            time.sleep(0.5)
+            print ("Your hand is", players[i][1])
+            players[i][4] = sumVals(players[i][1])
+            time.sleep(0.5)
+            print("your score therefore is:" , players[i][4])
+            if players[i][4] > 21:
                 print ("BUST")
-            if points == 21:
+            if players[i][4] == 21:
                 print("you must stick with 21")
-            players[i][1] = hand
-            players[i][4] = points
         print()
         print()
     cHand, cPoints = comBlackjack()
@@ -141,11 +141,11 @@ def hit(cards,thingy):
     
 def comBlackjack():
     print("now it's the computers  turn")
-    time.sleep(n*1.5)
+    time.sleep(1.5)
     hand = [deal(deck1), deal(deck1)]
     print ("computers hand is: ", hand)
     points = sumValsCom(hand)
-    time.sleep(n*0.4)
+    time.sleep(0.4)
     stand = False
     while stand == False:
         points = sumValsCom(hand)
@@ -162,7 +162,7 @@ def comBlackjack():
                 dealt = deal(deck1)
                 hand.append(dealt)
                 print("the hand now is", hand)
-        time.sleep(n*0.9)
+        time.sleep(0.9)
     return hand, points
     
 def whoWins(cCards, cScore):
@@ -171,14 +171,14 @@ def whoWins(cCards, cScore):
     print()
     print()
     print()
-    time.sleep(n*1)
+    time.sleep(1)
     for i in range (1, len(players)):
         print (players[i][0]+ '\'s hand is:')
         print(players[i][1])
-        time.sleep(n*0.5)
+        time.sleep(0.5)
     print('The Dealers hand is:')
     print(cCards)
-    time.sleep(n*0.6)
+    time.sleep(0.6)
     for i in range(1, len(players)):
         print()
         print(players[i][0], ':')
@@ -210,7 +210,7 @@ def whoWins(cCards, cScore):
 def placeBet(money):
     #calling chips money just so i have summat different in function
     print("you have", money, "chips")
-    time.sleep(n*0.4)
+    time.sleep(0.4)
     done = False
     while done == False:
         print("how much would you like to bet?")
@@ -298,12 +298,9 @@ def splitOpt(cards,thingy):
     print("would you like to split? Y/N")
     opt = input().lower()
     if opt == 'y':
-##        print("i'll work on this later")
-##        time.sleep(n*2)
-##        return hit(cards, thingy)
-        hand1 = cards[0]
-        hand2 = cards[1]
-        print("for the first",cards[0][0]+':')
+        print("i'll work on this later")
+        time.sleep(2)
+        return hit(cards, thingy)
     else:
         return hit(cards, thingy)
 def timeNDate():
@@ -311,28 +308,27 @@ def timeNDate():
     print("The time is:", time.gmtime()[3],':',time.gmtime()[4],':',time.gmtime()[5])
     
 players = [['playerNum', 'hand', 'chips', 'bet', 'score']]
-deck1 = Deck2.Deck(2)
 deadPlayers = []
 print("this game was created by Akmal Khalil")
 print("NOTE: IF TIE, DEALER WINS BY DEFAULT")
-time.sleep(n*0.6)
+time.sleep(0.6)
 print("MINIMUM BET IS 20")
-time.sleep(n*0.6)
+time.sleep(0.6)
 print("each player begins with 100 chips")
-time.sleep(n*0.6)
+time.sleep(0.6)
 print("Every time your score is calculated with an ace,\nyou must tell the computer whether it's a 1 or 11")
-time.sleep(n*0.8)
+time.sleep(0.8)
 print()
 print("WELCOME TO BLACKJACK")
 print()
 timeNDate()
-time.sleep(n*1)
+time.sleep(1)
 for i in range(3):
     print()
-numOfPlayers()
+deck1 = Deck2.Deck(numOfPlayers())
 while True :
     blackjack()
-    time.sleep(n*0.5)
+    time.sleep(0.5)
 
     for i in range(1,len(players)):
         if players[i][2] <20:
@@ -345,11 +341,11 @@ while True :
             players.remove(deadPlayers[i])
     if len(deck1.cardsList) < (len(players)*5):
         print("sorry there are not enough cards left in this deck")
-        time.sleep(n*0.3)
+        time.sleep(0.3)
         for i in range(1,len(players)):
             print(players[i][0])
             print("you have ",players[i][2], "chips remaining")
-            time.sleep(n*0.2)
+            time.sleep(0.2)
         break
     if len(players) == 1:
         print('NO PLAYERS LEFT')
