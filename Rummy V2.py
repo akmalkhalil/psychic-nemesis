@@ -45,7 +45,7 @@ for i in range(4):
                 face = str(j)
                 bob = face
             deck.append(Card(face,suits[i]))
-            deck[-1].img = pygame.image.load('C:\\Users\\Akmal\\Desktop\\Files\\games\\programs\\Playing Cards\\PNG-cards-1.3\\'+bob+'_of_'+blob+'.png')
+            deck[-1].img = pygame.image.load('Playing Cards\\PNG-cards-1.3\\'+bob+'_of_'+blob+'.png')
             deck[-1].img = pygame.transform.scale(deck[-1].img,(int(deck[-1].img.get_width()/5),int(deck[-1].img.get_height()/5)))
 
 
