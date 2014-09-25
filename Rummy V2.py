@@ -12,6 +12,8 @@ class Player():
     def __init__(self,n):
         self.name = n
         self.chips = 100
+        self.point = 0 #games like hearts??
+        #self.tricks = 0
         self.img = 'hmm'
         self.hand = []
 #maybe i could make a chips object aswell
@@ -78,16 +80,6 @@ def startHand():
             players[i].hand.append(deal())
 
 
-shuffleDeck()
-startHand()
-
-##for i in range(len(players)):
-##    print(players[i].name)
-##    for j in range(len(players[i].hand)):
-##        print(players[i].hand[j].face,players[i].hand[j].suit)
-    
-discardPile = [deal()]
-
 def choosePile(person):
     print('take card from (1)discard pile or from (2)deck')
     choice =0
@@ -121,5 +113,69 @@ def discardCard(cards):
     
 
 
+
+shuffleDeck()
+startHand()
+
+##for i in range(len(players)):
+##    print(players[i].name)
+##    for j in range(len(players[i].hand)):
+##        print(players[i].hand[j].face,players[i].hand[j].suit)
+    
+discardPile = [deal()]
         
+        
+#look at https://twistedmatrix.com/trac/
+
+#and socket networking on python
+
+
+#been a while
+#i wanna do some graphics
+pygame.init()
+fpsClock = pygame.time.Clock()
+windowSurf = pygame.display.set_mode((960,680))
+pygame.display.set_caption('Rummy')
+windowW = windowSurf.get_width()
+windowH = windowSurf.get_height()
+
+colour = {
+    'red' : pygame.Color(255,0,0),
+    'green' : pygame.Color(0,255,0),
+    'blue' : pygame.Color(0,0,255),
+    'white' : pygame.Color(255,255,255),
+    'magenta' : pygame.Color(255,0,255),
+    'yellow' : pygame.Color(255,255,0),
+    'cyan' : pygame.Color(0,255,255),
+    'black' : pygame.Color(0,0,0),
+    'silver' : pygame.Color(192,192,192)
+}
+currentP = players[0]
+running = True
+while running:
+    windowSurf.fill(colour['green'])
+
+    for i in range(len(currentP.hand)):
+        img = currentP.hand[i].img
+        windowSurf.blit(img, (i*(currentP.hand[i].img.get_width() + 5)+20, windowH-img.get_height()))
+        del img
+
+    
+
+    pygame.display.update()
+    fpsClock.tick(30)
+
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            running = False
+        elif event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
+                pygame.event.post(pygame.event.Event(QUIT))
+            elif event.key == K_q:
+                pygame.event.post(pygame.event.Event(QUIT))
+        elif event.type == MOUSEMOTION:
+            mouseX,mouseY = event.pos
+        elif event.type == MOUSEBUTTONDOWN:
+            pass
         
