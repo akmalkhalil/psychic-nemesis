@@ -55,7 +55,7 @@ def OHshuffle(cards):#over hand
         else:
             drop = [packet[x] for x in range(0,random.randint(int(len(packet)*percentRange[0]),int(len(packet)*percentRange[1])))]
             #i couldnt be bothered to figur out % so i'll use same as earlier
-        cards.append(drop)
+        cards+=drop
     return cards
 def UHshuffle(cards):#underhand
     percentRanges((1/13,0.25),(0.65,0.85))
