@@ -1,6 +1,11 @@
 psychic-nemesis
 ===============
 
+
+NEEDS UPDATING
+
+
+
 <b><u>blackjack and other card games</u></b>
 
 <p>blackjack game i've spent my christmas holidays creating<br/>
