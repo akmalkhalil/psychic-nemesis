@@ -1,5 +1,7 @@
 import pygame
 from pygame.locals import *
+import random
+
 
 #from myButtons import Button
 class Button():#based on the code from my previous attempt at a button
@@ -25,18 +27,78 @@ class Button():#based on the code from my previous attempt at a button
         return self.rect[0],self.rect[0]+self.rect[2]
     def get_Ys(self):
         return self.rect[1],self.rect[1]+self.rect[3]
+#the other bit from myButtons
+class SwitchB():
+    def __init__(self, rect, switch, text = "", Fsize = 12):
+        self.rect = rect
+        if isinstance(switch, bool):
+            self.switch = switch
+            self.onColour = pygame.color.Color(0,255,0)
+            self.offColour = pygame.color.Color(255,0,0)
+            self.colour = self.offColour
+        elif isinstance(switch, list):
+            self.switch = switch
+            self.colour = pygame.color.Color(0,0,255)
+            self.l = len(switch)
+            self.stateN = 0 
+        else:
+            raise TypeError('switch must be a bool type or a list type or a function')
+        self.text = text
+        self.Fsize = Fsize
+
+    def pressButton(self):
+        if isinstance(self.switch, bool):
+            self.switch = not self.switch
+        else:
+            self.stateN += 1
+            if self.stateN == self.l:
+                self.stateN = 0
+
+    def getState(self):
+        if isinstance(self.switch, bool):
+            return self.switch
+        else:
+            return self.switch[self.stateN]
+        
+            
+        
+    def showButton(self,surface):
+        if isinstance(self.switch, bool):
+            if self.switch:
+                colour = self.onColour
+            else:
+                colour = self.offColour
+        else:
+            colour = self.colour
+        pygame.draw.rect(surface, colour, self.rect)
+        if len(self.text) > 0:
+            font = pygame.font.Font('freesansbold.ttf',self.Fsize)
+            msgSurfObj = font.render(self.text, False, pygame.color.Color(0,0,0))
+            msgRectObj = msgSurfObj.get_rect()
+            msgRectObj.center = (self.rect[0] + int(self.rect[2]/2), self.rect[1] + int(self.rect[3]/2))
+            windowSurf.blit(msgSurfObj, msgRectObj)
+
+        
+
+    def Xstartstop(self):#the start and end of the x co-ords where button is
+        return self.rect[0],self.rect[0]+self.rect[2]
+
+    def Ystartstop(self):
+        return self.rect[1],self.rect[1]+self.rect[3]
 
 #setting up the cards and the deck
 class Card():
-    def __init__(self, faceVal, suit):
+    def __init__(self, faceVal, suit,faceN):
         self.faceVal = faceVal
         self.suit = suit
         self.img = ''
+        self.faceN = faceN
+        
 num = 0
 deck = []
 suits = ('♠', '❤', '♣', '♦')
-CARDWIDTH = 100
-CARDHEIGHT = 145#i hope
+CARDWIDTH = 75
+CARDHEIGHT = int(3* 145/4)#i hope
 #picAddr = 'Playing Cards\\PNG-cards-1.3\\'##if the file is saved in the same file
 picAddr = "C:/Users/Akmal/Desktop/Files/games/programs/Playing Cards/PNG-cards-1.3/"#just for now
 for i in range(4):
@@ -64,7 +126,7 @@ for i in range(4):
             else:
                 face = str(j)
                 bob = face
-            deck.append(Card(face,suits[i]))
+            deck.append(Card(face,suits[i],j))
             try:
                 deck[-1].img = pygame.image.load(picAddr+bob+'_of_'+blob+'.png')
             except pygame.error:
@@ -80,12 +142,48 @@ for i in range(4):
             deck[-1].img = pygame.transform.scale(deck[-1].img, (CARDWIDTH, CARDHEIGHT),)
 del bob,blob,face,j,i,picAddr,num
 
+def shuffleDeck(deck):
+    shuffled = []
+    temp = [deck[x] for x in range(len(deck))]
+    for i in range(len(deck)):
+        rand = random.randint(0,len(deck)-1)
+        shuffled.append(deck[rand])
+        deck.remove(deck[rand])
+    deck = [temp[x] for x in range(len(temp))]
+    return shuffled, deck
 
-def deal2(hand,deck,shuffled = True):
-    #assume it's been shuffled for now
-    cards = [deck.pop(),deck.pop()]
-    hand.append(cards[0])
-    hand.append(cards[1])
+##def deal2(hand,deck):
+##    cards = [deck.pop(),deck.pop()]
+##    hand.append(cards[0])
+##    hand.append(cards[1])
+def dealN(hand, deck, n):
+    cards = [deck.pop() for x in range(n)]
+    for i in range(n):
+        hand.append(cards[i])
+
+def calcScore(hand):
+    score = 0
+    for i in range(len(hand)):
+        if 1<hand[i].faceN<11:
+            score += hand[i].faceN
+        elif 10<hand[i].faceN<14:
+            score +=10
+        elif hand[i].faceN == 1:
+            oneB = Button((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,80,30),lambda:print("1"))
+            elevenB = Button((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10+30+5,80,30), lambda:print("11"))
+            #oneB = switchB
+            aceBs.append([oneB,elevenB])
+    return score
+
+def displayText(surface,text,topLeft):
+    textSurf = fontObj.render(str(text), False, colour['blue'])
+    textRect = textSurf.get_rect()
+    textRect.topleft = topLeft
+    surface.blit(textSurf, textRect)
+    
+
+
+    
 
 pygame.init()
 fpsClock = pygame.time.Clock()
@@ -94,29 +192,64 @@ pygame.display.set_caption("yeah")
 windowW = windowSurf.get_width()
 windowH = windowSurf.get_height()
 
+colour = {
+    'red' : pygame.Color(255,0,0),
+    'green' : pygame.Color(0,255,0),
+    'blue' : pygame.Color(0,0,255),
+    'white' : pygame.Color(255,255,255),
+    'magenta' : pygame.Color(255,0,255),
+    'yellow' : pygame.Color(255,255,0),
+    'cyan' : pygame.Color(0,255,255),
+    'black' : pygame.Color(0,0,0),
+    'silver' : pygame.Color(192,192,192)
+}
+colour2 = {}
+file = open ('C:\\Users\\Akmal\\Desktop\\Files\\500+ colours.csv','r')
+lines = file.readlines()
+file.close
+colName = ''
+red = 0
+green = 0
+blue =0
+for i in range(1,len(lines)):
+    row = lines[i].split(',')
+    colName = str(row[0])
+    red,green,blue = int(row[4]),int(row[5]),int(row[6])
+    colour2[colName] = pygame.color.Color(red,green,blue)
+del red,green,blue
+fontObj = pygame.font.Font('freesansbold.ttf',32)
+
+
 mouseX,mouseY = 0,0
 
 
 myHand = []
+shuffledD, deck = shuffleDeck(deck)
 
+deal2B = Button((200,windowH-125,80,40), lambda:dealN(myHand,shuffledD,2), text = "deal2")
+deal1B = Button((300,windowH-125,80,40), lambda:dealN(myHand, shuffledD, 1), text = "deal1")
+aceBs = []
 
-#deal2(myHand,deck)
+totalScore = 0
+
+#deal2(myHand,shuffledD)
 running = True
 while running:
-    windowSurf.fill((0,0,0))
-
-##    windowSurf.blit(deck[0].img,(10,10))
-##    windowSurf.blit(myHand[0].img, (10,100))
-##
-##    pygame.draw.line(windowSurf, (0,255,0),(10,100),(110,100))
+    windowSurf.fill(colour['green'])
     
     handSize = len(myHand)
     for i in range(handSize):
         windowSurf.blit(myHand[i].img, (10+i*(CARDWIDTH+5), 100))
         
-    deal2B = Button((200,windowH-125,80,40), lambda:deal2(myHand,deck), text = "deal2")
+    
     deal2B.showButton(windowSurf)
-
+    deal1B.showButton(windowSurf)
+    for i in range(len(aceBs)):
+        aceBs[i][0].showButton(windowSurf)
+        aceBs[i][1].showButton(windowSurf)
+    
+    displayText(windowSurf, totalScore, (windowW-75,10))
+    
     pygame.display.update()
     fpsClock.tick(30)
     for event in pygame.event.get():
@@ -133,6 +266,23 @@ while running:
             if deal2Bco_ords[0][0] < mouseX < deal2Bco_ords[0][1]:
                 if deal2Bco_ords[1][0] < mouseY < deal2Bco_ords[1][1]:
                     deal2B.pressButton()
+                    totalScore = calcScore(myHand)
+                    #may need to copy this elsewhere when other things are done
+            deal1Bco_ords = [deal1B.get_Xs(), deal1B.get_Ys()]
+            if deal1Bco_ords[0][0]<mouseX<deal1Bco_ords[0][1]:
+                if deal1Bco_ords[1][0]<mouseY<deal1Bco_ords[1][1]:
+                    deal1B.pressButton()
+                    totalScore = calcScore(myHand)
+                    #may need to copy this elsewhere when other things are done
+            for i in range(len(aceBs)):
+                print(aceBs)
+                oneBco_ords = [aceBs[i][0].get_Xs(), aceBs[i][0].get_Ys()]
+                elevenBYOrds = aceBs[i][1].get_Ys()
+                if oneBco_ords[0][0] < mouseX < oneBco_ords[0][1]:
+                    if oneBco_ords[1][0] < mouseY < oneBco_ords[1][1]:
+                        aceBs[i][0].pressButton()
+                    elif elevenBYOrds[0] < mouseY < elevenBYOrds[1]:
+                        aceBs[i][1].pressButton()
 
 
 
