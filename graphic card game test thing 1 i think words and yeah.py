@@ -15,7 +15,7 @@ class Button():#based on the code from my previous attempt at a button
     def pressButton(self):
         self.command()
 
-    def showButton(self,surface):
+    def showButton(self,surface):#stick in an if statement so that it's not shown twice
         pygame.draw.rect(surface, self.colour, self.rect)
         font = pygame.font.Font('freesansbold.ttf',self.Fsize)
         msgSurfObj = font.render(self.text, False, pygame.color.Color(0,0,0))
@@ -28,6 +28,7 @@ class Button():#based on the code from my previous attempt at a button
     def get_Ys(self):
         return self.rect[1],self.rect[1]+self.rect[3]
 #the other bit from myButtons
+#i wrote this one over summer i think, now it's april so a while ago
 class SwitchB():
     def __init__(self, rect, switch, text = "", Fsize = 12):
         self.rect = rect
@@ -40,7 +41,8 @@ class SwitchB():
             self.switch = switch
             self.colour = pygame.color.Color(0,0,255)
             self.l = len(switch)
-            self.stateN = 0 
+            self.stateN = 0
+            self.colourA = []#stick in a comprehension so set the colours
         else:
             raise TypeError('switch must be a bool type or a list type or a function')
         self.text = text
@@ -53,13 +55,13 @@ class SwitchB():
             self.stateN += 1
             if self.stateN == self.l:
                 self.stateN = 0
+                
 
     def getState(self):
         if isinstance(self.switch, bool):
             return self.switch
         else:
             return self.switch[self.stateN]
-        
             
         
     def showButton(self,surface):
@@ -69,7 +71,10 @@ class SwitchB():
             else:
                 colour = self.offColour
         else:
-            colour = self.colour
+            if len(self.colour) == self.l:
+                colour = self.colourA[stateN]
+            else:    
+                colour = self.colour
         pygame.draw.rect(surface, colour, self.rect)
         if len(self.text) > 0:
             font = pygame.font.Font('freesansbold.ttf',self.Fsize)
@@ -160,7 +165,10 @@ def dealN(hand, deck, n):
     cards = [deck.pop() for x in range(n)]
     for i in range(n):
         hand.append(cards[i])
-
+        if cards[i].faceVal == 'A':
+            #aceB = SwitchB((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,80,30), [1,11], text = "umm shouldnt this change?")
+            #aceBs.append(aceB)
+            print("where to put that rect??????????????")
 def calcScore(hand):
     score = 0
     for i in range(len(hand)):
@@ -169,10 +177,12 @@ def calcScore(hand):
         elif 10<hand[i].faceN<14:
             score +=10
         elif hand[i].faceN == 1:
-            oneB = Button((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,80,30),lambda:print("1"))
-            elevenB = Button((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10+30+5,80,30), lambda:print("11"))
-            #oneB = switchB
-            aceBs.append([oneB,elevenB])
+            score+=
+##            oneB = Button((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,80,30),lambda:print("1"))
+##            elevenB = Button((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10+30+5,80,30), lambda:print("11"))
+##            aceBs.append([oneB,elevenB])
+##            aceB = SwitchB((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,80,30), [1,11], text = "umm shouldnt this change?")
+##            aceBs.append(aceB)
     return score
 
 def displayText(surface,text,topLeft):
@@ -244,9 +254,11 @@ while running:
     
     deal2B.showButton(windowSurf)
     deal1B.showButton(windowSurf)
+##    for i in range(len(aceBs)):
+##        aceBs[i][0].showButton(windowSurf)
+##        aceBs[i][1].showButton(windowSurf)
     for i in range(len(aceBs)):
-        aceBs[i][0].showButton(windowSurf)
-        aceBs[i][1].showButton(windowSurf)
+        aceBs[i].showButton(windowSurf)
     
     displayText(windowSurf, totalScore, (windowW-75,10))
     
@@ -274,17 +286,23 @@ while running:
                     deal1B.pressButton()
                     totalScore = calcScore(myHand)
                     #may need to copy this elsewhere when other things are done
+##            for i in range(len(aceBs)):
+##                print(aceBs)
+##                oneBco_ords = [aceBs[i][0].get_Xs(), aceBs[i][0].get_Ys()]
+##                elevenBYOrds = aceBs[i][1].get_Ys()
+##                if oneBco_ords[0][0] < mouseX < oneBco_ords[0][1]:
+##                    if oneBco_ords[1][0] < mouseY < oneBco_ords[1][1]:
+##                        aceBs[i][0].pressButton()
+##                    elif elevenBYOrds[0] < mouseY < elevenBYOrds[1]:
+##                        aceBs[i][1].pressButton()
+
             for i in range(len(aceBs)):
-                print(aceBs)
-                oneBco_ords = [aceBs[i][0].get_Xs(), aceBs[i][0].get_Ys()]
-                elevenBYOrds = aceBs[i][1].get_Ys()
-                if oneBco_ords[0][0] < mouseX < oneBco_ords[0][1]:
-                    if oneBco_ords[1][0] < mouseY < oneBco_ords[1][1]:
-                        aceBs[i][0].pressButton()
-                    elif elevenBYOrds[0] < mouseY < elevenBYOrds[1]:
-                        aceBs[i][1].pressButton()
-
-
+                co_ords = [aceBs[i].Xstartstop(), aceBs[i].Ystartstop()]
+                if co_ords[0][0] < mouseX < co_ords[0][1]:
+                    if co_ords[1][0] < mouseY < co_ords[1][1]:
+                        aceBs[i].pressButton()
+                        print(aceBs[i].getState())
+                    
 
 
 
