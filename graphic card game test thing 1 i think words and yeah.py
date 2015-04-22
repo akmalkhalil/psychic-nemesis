@@ -71,9 +71,9 @@ class SwitchB():
             else:
                 colour = self.offColour
         else:
-            if len(self.colour) == self.l:
-                colour = self.colourA[stateN]
-            else:    
+            if len(self.colourA) == self.l:
+                colour = self.colourA[self.stateN]
+            else:
                 colour = self.colour
         pygame.draw.rect(surface, colour, self.rect)
         if len(self.text) > 0:
@@ -168,7 +168,8 @@ def dealN(hand, deck, n):
         if cards[i].faceVal == 'A':
             #aceB = SwitchB((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,80,30), [1,11], text = "umm shouldnt this change?")
             #aceBs.append(aceB)
-            print("where to put that rect??????????????")
+            aceBs[cards[i]] = SwitchB((0,0,0,0), [1,11], text = "umm shouldnt this change?")
+            aceBs[cards[i]].colourA = [pygame.Color(255,0,0),pygame.Color(0,0,255)]
 def calcScore(hand):
     score = 0
     for i in range(len(hand)):
@@ -177,7 +178,7 @@ def calcScore(hand):
         elif 10<hand[i].faceN<14:
             score +=10
         elif hand[i].faceN == 1:
-            score+=
+            score+=aceBs[hand[i]].getState()
 ##            oneB = Button((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,80,30),lambda:print("1"))
 ##            elevenB = Button((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10+30+5,80,30), lambda:print("11"))
 ##            aceBs.append([oneB,elevenB])
@@ -197,7 +198,7 @@ def displayText(surface,text,topLeft):
 
 pygame.init()
 fpsClock = pygame.time.Clock()
-windowSurf = pygame.display.set_mode((640,480))
+windowSurf = pygame.display.set_mode((960,480))
 pygame.display.set_caption("yeah")
 windowW = windowSurf.get_width()
 windowH = windowSurf.get_height()
@@ -238,7 +239,9 @@ shuffledD, deck = shuffleDeck(deck)
 
 deal2B = Button((200,windowH-125,80,40), lambda:dealN(myHand,shuffledD,2), text = "deal2")
 deal1B = Button((300,windowH-125,80,40), lambda:dealN(myHand, shuffledD, 1), text = "deal1")
-aceBs = []
+aceBs = {}#maybe i should have aceBs as a class
+#I've had to change it three times now and i have to do it throughout the program
+#if i have it as a class I'll just have to change it in the class???
 
 totalScore = 0
 
@@ -250,6 +253,10 @@ while running:
     handSize = len(myHand)
     for i in range(handSize):
         windowSurf.blit(myHand[i].img, (10+i*(CARDWIDTH+5), 100))
+        if myHand[i] in aceBs:
+            aceBs[myHand[i]].rect = (10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,CARDWIDTH,20)
+            aceBs[myHand[i]].showButton(windowSurf)
+            #print("I feel so awesome right now")
         
     
     deal2B.showButton(windowSurf)
@@ -257,8 +264,9 @@ while running:
 ##    for i in range(len(aceBs)):
 ##        aceBs[i][0].showButton(windowSurf)
 ##        aceBs[i][1].showButton(windowSurf)
-    for i in range(len(aceBs)):
-        aceBs[i].showButton(windowSurf)
+##    for i in range(len(aceBs)):
+##        aceBs[i].showButton(windowSurf)
+    
     
     displayText(windowSurf, totalScore, (windowW-75,10))
     
@@ -286,23 +294,16 @@ while running:
                     deal1B.pressButton()
                     totalScore = calcScore(myHand)
                     #may need to copy this elsewhere when other things are done
-##            for i in range(len(aceBs)):
-##                print(aceBs)
-##                oneBco_ords = [aceBs[i][0].get_Xs(), aceBs[i][0].get_Ys()]
-##                elevenBYOrds = aceBs[i][1].get_Ys()
-##                if oneBco_ords[0][0] < mouseX < oneBco_ords[0][1]:
-##                    if oneBco_ords[1][0] < mouseY < oneBco_ords[1][1]:
-##                        aceBs[i][0].pressButton()
-##                    elif elevenBYOrds[0] < mouseY < elevenBYOrds[1]:
-##                        aceBs[i][1].pressButton()
 
-            for i in range(len(aceBs)):
-                co_ords = [aceBs[i].Xstartstop(), aceBs[i].Ystartstop()]
+            for key in aceBs.keys():#dont think i need the i just do it with .keys()
+                co_ords = [aceBs[key].Xstartstop(), aceBs[key].Ystartstop()]
                 if co_ords[0][0] < mouseX < co_ords[0][1]:
                     if co_ords[1][0] < mouseY < co_ords[1][1]:
-                        aceBs[i].pressButton()
-                        print(aceBs[i].getState())
-                    
+                        aceBs[key].pressButton()
+                        print(aceBs[key].getState())
+                        totalScore = calcScore(myHand)
+                        #may need to copy this elsewhere when other things are done
+            
 
 
 
