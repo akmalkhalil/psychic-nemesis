@@ -1,9 +1,6 @@
-import pygame
+import pygame,random,time
 from pygame.locals import *
-import random
 
-
-#from myButtons import Button
 class Button():#based on the code from my previous attempt at a button
     def __init__(self, rect, command, text = "", Fsize = 12):
         self.rect = rect
@@ -27,10 +24,15 @@ class Button():#based on the code from my previous attempt at a button
         return self.rect[0],self.rect[0]+self.rect[2]
     def get_Ys(self):
         return self.rect[1],self.rect[1]+self.rect[3]
-    #create function to check if it's been clicked
-#the other bit from myButtons
-#i wrote this one over summer i think, now it's april so a while ago
-class SwitchB():
+
+    def checkPress(self,mX,mY):#mouseX and mouseY
+        co_ords = [self.get_Xs(),self.get_Ys()]
+        if co_ords[0][0] < mX < co_ords[0][1]:
+            if co_ords[1][0] < mY < co_ords[1][1]:
+                return True
+    
+
+class SwitchB(Button):#boom some ineritence
     def __init__(self, rect, switch, text = "", Fsize = 12):
         self.rect = rect
         if isinstance(switch, bool):
@@ -84,22 +86,79 @@ class SwitchB():
             msgRectObj.center = (self.rect[0] + int(self.rect[2]/2), self.rect[1] + int(self.rect[3]/2))
             windowSurf.blit(msgSurfObj, msgRectObj)
 
-        
 
-    def Xstartstop(self):#the start and end of the x co-ords where button is
-        return self.rect[0],self.rect[0]+self.rect[2]
-
-    def Ystartstop(self):
-        return self.rect[1],self.rect[1]+self.rect[3]
-
-#setting up the cards and the deck
 class Card():
     def __init__(self, faceVal, suit,faceN):
         self.faceVal = faceVal
         self.suit = suit
         self.img = ''
         self.faceN = faceN
-        
+
+class Player():
+    def __init__(self, name, chips, hand, points):
+        self.name = name
+        self.chips = chips
+        self.hand = hand
+        self.points = points
+    
+    def calcScore(self):
+        score = 0
+        for i in range(len(self.hand)):
+            if 1<self.hand[i].faceN<11:
+                score += self.hand[i].faceN
+            elif 10<self.hand[i].faceN<14:
+                score+=10
+            elif self.hand[i].faceN == 1:
+                score += aceBs[self.hand[i]].getState()
+        return score
+    
+    def binHand(self,binD):#binDeck
+        #cards = [self.hand.pop() for x in range(len(self.hand))]
+        for i in range(len(self.hand)):
+            binD.append(self.hand.pop())
+
+class Deck():
+    def __init__(self,cards):
+        self.cards = cards
+
+    def shuffleDeck(self):
+        shuffled = []
+        orig = [deck[x] for x in range(len(self.cards))]
+        for i in range(len(self.cards)):
+            rand = random.randint(0,len(self.cards)-1)
+            shuffled.append(self.cards[rand])
+            self.cards.remove(deck[rand])
+        self.cards = shuffled
+        #do i want to do anything with orig?
+
+    def dealN(self,target,n):#where target is the hand/table you're dealing to
+        dealing = [self.cards.pop() for x in range(n)]
+        for i in range(n):
+            target.append(dealing[i])
+            if dealing[i].faceVal == 'A':
+                """AAAAAHHHHH
+YOU NEED TO DO THINGS HERE
+WELL THINGS HAVE HAPPENED HERE ARE IMPORTANT
+MAKE SURE YOU SORT OUT THE ACES
+THE ACES
+THE ACES
+AAAAAAAAHHHHH"""
+                aceBs[dealing[i]] =  SwitchB((0,0,0,0), [1,11],"umm shouldnt this change?")
+                aceBs[dealing[i]].colourA = [pygame.Color(255,0,0),pygame.Color(0,0,255)]        
+##class AceBs():
+##    def __init__(self,
+"""
+and i need to figure out how to make this aceBs class
+"""
+
+
+def displayText(surface,text,topLeft):
+    textSurf = fontObj.render(str(text), False, colour['blue'])
+    textRect = textSurf.get_rect()
+    textRect.topleft = topLeft
+    surface.blit(textSurf, textRect)
+    
+#shuffled/clean/bin
 num = 0
 deck = []
 suits = ('♠', '❤', '♣', '♦')
@@ -146,70 +205,21 @@ for i in range(4):
                     quit()
             #deck[-1].img = pygame.transform.scale(deck[-1].img,(int(deck[-1].img.get_width()/5),int(deck[-1].img.get_height()/5)))
             deck[-1].img = pygame.transform.scale(deck[-1].img, (CARDWIDTH, CARDHEIGHT),)
-del bob,blob,face,j,i,picAddr,num
-
-def shuffleDeck(deck):
-    shuffled = []
-    temp = [deck[x] for x in range(len(deck))]
-    for i in range(len(deck)):
-        rand = random.randint(0,len(deck)-1)
-        shuffled.append(deck[rand])
-        deck.remove(deck[rand])
-    deck = [temp[x] for x in range(len(temp))]
-    return shuffled, deck
-
-##def deal2(hand,deck):
-##    cards = [deck.pop(),deck.pop()]
-##    hand.append(cards[0])
-##    hand.append(cards[1])
-def dealN(hand, deck, n):
-    cards = [deck.pop() for x in range(n)]
-    for i in range(n):
-        hand.append(cards[i])
-        if cards[i].faceVal == 'A':
-            #aceB = SwitchB((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,80,30), [1,11], text = "umm shouldnt this change?")
-            #aceBs.append(aceB)
-            aceBs[cards[i]] = SwitchB((0,0,0,0), [1,11], text = "umm shouldnt this change?")
-            aceBs[cards[i]].colourA = [pygame.Color(255,0,0),pygame.Color(0,0,255)]
-def calcScore(hand):
-    score = 0
-    for i in range(len(hand)):
-        if 1<hand[i].faceN<11:
-            score += hand[i].faceN
-        elif 10<hand[i].faceN<14:
-            score +=10
-        elif hand[i].faceN == 1:
-            score+=aceBs[hand[i]].getState()
-##            oneB = Button((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,80,30),lambda:print("1"))
-##            elevenB = Button((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10+30+5,80,30), lambda:print("11"))
-##            aceBs.append([oneB,elevenB])
-##            aceB = SwitchB((10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,80,30), [1,11], text = "umm shouldnt this change?")
-##            aceBs.append(aceB)
-    return score
-
-def displayText(surface,text,topLeft):
-    textSurf = fontObj.render(str(text), False, colour['blue'])
-    textRect = textSurf.get_rect()
-    textRect.topleft = topLeft
-    surface.blit(textSurf, textRect)
+CLEANDECK = Deck(deck)
+shuffledD = Deck(deck)
+shuffledD.shuffleDeck()
+del bob,blob,face,j,i,picAddr,num,deck
+binD = Deck([])
 
 
-def checkEvents():
-    pass
 
-def binHand(hand,anotherWordForBin):
-    cards = [hand.pop() for x in range(len(hand))]
-    for i in range(len(cards)):
-        anotherWordForBin.append(cards[i])
-        
-    
 
-    
+
 
 pygame.init()
 fpsClock = pygame.time.Clock()
 windowSurf = pygame.display.set_mode((960,480))
-pygame.display.set_caption("yeah")
+pygame.display.set_caption("Ver2")
 windowW = windowSurf.get_width()
 windowH = windowSurf.get_height()
 
@@ -240,91 +250,77 @@ for i in range(1,len(lines)):
 del red,green,blue
 fontObj = pygame.font.Font('freesansbold.ttf',32)
 
-
 mouseX,mouseY = 0,0
 
+#print("how many players")
+#playersN = input()
+#etc
 
-myHand = []
-shuffledD, deck = shuffleDeck(deck)
-binD = []
 
-deal2B = Button((200,windowH-125,80,40), lambda:dealN(myHand,shuffledD,2), text = "deal2")
-deal1B = Button((300,windowH-125,80,40), lambda:dealN(myHand, shuffledD, 1), text = "deal1")
-aceBs = {}#maybe i should have aceBs as a class
-#I've had to change it three times now and i have to do it throughout the program
-#if i have it as a class I'll just have to change it in the class???
 
-totalScore = 0
+"""
+THIS IS TEMPORARY
+CHANGE THIS
+THIS IS TEMPORARY
+"""
+testPlayer = Player("Akmal",100,[],0)
 
-binHandB = Button((400,windowH-125,80,40), lambda:binHand(myHand, binD),text = "Bin Hand")
+hitB = Button((300,windowH-125,80,40), lambda:shuffledD.dealN(testPlayer.hand, 1), text = "HIT")
 
-#deal2(myHand,shuffledD)
+aceBs = {}#BUILD ACEbS CLASS
+
+
 running = True
+#i need more than one while loop
+#maybe while loops within a for loops
+#wow i can stick that for loop in a while loop
+#woah
+#loopception
 while running:
+    windowSurf.fill(colour['blue'])
 
-    windowSurf.fill(colour['green'])
-    
-    handSize = len(myHand)
-    for i in range(handSize):
-        windowSurf.blit(myHand[i].img, (10+i*(CARDWIDTH+5), 100))
-        if myHand[i] in aceBs:
-            aceBs[myHand[i]].rect = (10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,CARDWIDTH,20)
-            aceBs[myHand[i]].showButton(windowSurf)
+    #for each player +1(computer)
+    #maybe use hydrox's PlayerSlot class???
+    for p in range(1):#call it p for player
+        #use the other for loop once i've got this sorted
+        while running:#umm what do i stick here???????????????????????????????
+            windowSurf.fill(colour['blue'])#could i change colour for players?
+            currentPlayer = testPlayer
+            currentHand = currentPlayer.hand
+            handSize = len(currentHand)
+            for i in range(handSize):
+                windowSurf.blit(currentHand[i].img, (10+i*(CARDWIDTH+5), 100))
+                if currentHand[i] in aceBs:
+                    aceBs[currentHand[i]].rect = (10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,CARDWIDTH,20)
+                    aceBs[currentHand[i]].showButton(windowSurf)
+            hitB.showButton(windowSurf)
 
-    deal2B.showButton(windowSurf)
-    deal1B.showButton(windowSurf)
+            displayText(windowSurf, currentPlayer.points, (windowW-75,10))
 
-    displayText(windowSurf, totalScore, (windowW-75,10))
+            #temp to keep an eye on remaining cards
+            displayText(windowSurf,len(shuffledD.cards),(windowW-75,40))#keep an eye on that 40        may wanna change it
 
-    binHandB.showButton(windowSurf)
-    
+            pygame.display.update()
+            fpsClock.tick(30)
 
-
-    #temp thing to show num of cards in deck
-    displayText(windowSurf,len(shuffledD),(windowW-75,40))#keep and eye on that 40
-    
-    pygame.display.update()
-    fpsClock.tick(30)
-
-    #checkEvents()
-
-    for event in pygame.event.get():
-        if event.type == KEYDOWN:
-            if event.key == K_ESCAPE or event.key == K_q:
-                pygame.event.post(pygame.event.Event(QUIT))
-        elif event.type == QUIT:
-            pygame.quit()
-            running = False
-        elif event.type == MOUSEMOTION:
-            mouseX,mouseY = event.pos
-        elif event.type == MOUSEBUTTONUP:
-            deal2Bco_ords = [deal2B.get_Xs(), deal2B.get_Ys()]
-            if deal2Bco_ords[0][0] < mouseX < deal2Bco_ords[0][1]:
-                if deal2Bco_ords[1][0] < mouseY < deal2Bco_ords[1][1]:
-                    deal2B.pressButton()
-                    totalScore = calcScore(myHand)
-                    #may need to copy this elsewhere when other things are done
-            deal1Bco_ords = [deal1B.get_Xs(), deal1B.get_Ys()]
-            if deal1Bco_ords[0][0]<mouseX<deal1Bco_ords[0][1]:
-                if deal1Bco_ords[1][0]<mouseY<deal1Bco_ords[1][1]:
-                    deal1B.pressButton()
-                    totalScore = calcScore(myHand)
-                    #may need to copy this elsewhere when other things are done
-
-            for key in aceBs.keys():#dont think i need the i just do it with .keys()
-                co_ords = [aceBs[key].Xstartstop(), aceBs[key].Ystartstop()]
-                if co_ords[0][0] < mouseX < co_ords[0][1]:
-                    if co_ords[1][0] < mouseY < co_ords[1][1]:
-                        aceBs[key].pressButton()
-                        print(aceBs[key].getState())
-                        totalScore = calcScore(myHand)
-                        #may need to copy this elsewhere when other things are done
-            binHandBco_ords = [binHandB.get_Xs(),binHandB.get_Ys()]
-            if binHandBco_ords[0][0]<mouseX<binHandBco_ords[0][1]:
-                if binHandBco_ords[1][0] < mouseY < binHandBco_ords[1][1]:
-                    binHandB.pressButton()
-                    totalScore = calcScore(myHand)
-                    #may need to copy this elsewhere when other things are done
+            for event in pygame.event.get():
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE or event.key == K_q:
+                        pygame.event.post(pygame.event.Event(QUIT))
+                elif event.type == QUIT:
+                    pygame.quit()
+                    running = False
+                elif event.type == MOUSEMOTION:
+                    mouseX,mouseY = event.pos
+                elif event.type == MOUSEBUTTONUP:
+                    if hitB.checkPress(mouseX,mouseY):
+                        hitB.pressButton()
+                        currentPlayer.points = currentPlayer.calcScore()
+                    for key in aceBs.keys():
+                        if aceBs[key].checkPress(mouseX,mouseY):
+                            aceBs[key].pressButton()
+                            currentPlayer.points = currentPlayer.calcScore()
+        
 
 
 
@@ -336,9 +332,7 @@ while running:
 
 
 
-
-
-
-
-
-print("and the programs ended")
+#end of the program
+##that's just here for now
+time.sleep(2)
+pygame.quit()
