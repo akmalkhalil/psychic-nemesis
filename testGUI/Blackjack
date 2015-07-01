@@ -27,6 +27,7 @@ class Button():#based on the code from my previous attempt at a button
         return self.rect[0],self.rect[0]+self.rect[2]
     def get_Ys(self):
         return self.rect[1],self.rect[1]+self.rect[3]
+    #create function to check if it's been clicked
 #the other bit from myButtons
 #i wrote this one over summer i think, now it's april so a while ago
 class SwitchB():
@@ -191,8 +192,17 @@ def displayText(surface,text,topLeft):
     textRect = textSurf.get_rect()
     textRect.topleft = topLeft
     surface.blit(textSurf, textRect)
-    
 
+
+def checkEvents():
+    pass
+
+def binHand(hand,anotherWordForBin):
+    cards = [hand.pop() for x in range(len(hand))]
+    for i in range(len(cards)):
+        anotherWordForBin.append(cards[i])
+        
+    
 
     
 
@@ -236,6 +246,7 @@ mouseX,mouseY = 0,0
 
 myHand = []
 shuffledD, deck = shuffleDeck(deck)
+binD = []
 
 deal2B = Button((200,windowH-125,80,40), lambda:dealN(myHand,shuffledD,2), text = "deal2")
 deal1B = Button((300,windowH-125,80,40), lambda:dealN(myHand, shuffledD, 1), text = "deal1")
@@ -245,9 +256,12 @@ aceBs = {}#maybe i should have aceBs as a class
 
 totalScore = 0
 
+binHandB = Button((400,windowH-125,80,40), lambda:binHand(myHand, binD),text = "Bin Hand")
+
 #deal2(myHand,shuffledD)
 running = True
 while running:
+
     windowSurf.fill(colour['green'])
     
     handSize = len(myHand)
@@ -256,22 +270,24 @@ while running:
         if myHand[i] in aceBs:
             aceBs[myHand[i]].rect = (10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,CARDWIDTH,20)
             aceBs[myHand[i]].showButton(windowSurf)
-            #print("I feel so awesome right now")
-        
-    
+
     deal2B.showButton(windowSurf)
     deal1B.showButton(windowSurf)
-##    for i in range(len(aceBs)):
-##        aceBs[i][0].showButton(windowSurf)
-##        aceBs[i][1].showButton(windowSurf)
-##    for i in range(len(aceBs)):
-##        aceBs[i].showButton(windowSurf)
-    
-    
+
     displayText(windowSurf, totalScore, (windowW-75,10))
+
+    binHandB.showButton(windowSurf)
+    
+
+
+    #temp thing to show num of cards in deck
+    displayText(windowSurf,len(shuffledD),(windowW-75,40))#keep and eye on that 40
     
     pygame.display.update()
     fpsClock.tick(30)
+
+    #checkEvents()
+
     for event in pygame.event.get():
         if event.type == KEYDOWN:
             if event.key == K_ESCAPE or event.key == K_q:
@@ -303,9 +319,12 @@ while running:
                         print(aceBs[key].getState())
                         totalScore = calcScore(myHand)
                         #may need to copy this elsewhere when other things are done
-            
-
-
+            binHandBco_ords = [binHandB.get_Xs(),binHandB.get_Ys()]
+            if binHandBco_ords[0][0]<mouseX<binHandBco_ords[0][1]:
+                if binHandBco_ords[1][0] < mouseY < binHandBco_ords[1][1]:
+                    binHandB.pressButton()
+                    totalScore = calcScore(myHand)
+                    #may need to copy this elsewhere when other things are done
 
 
 
