@@ -40,15 +40,23 @@ class SwitchB(Button):#boom some ineritence
             self.onColour = pygame.color.Color(0,255,0)
             self.offColour = pygame.color.Color(255,0,0)
             self.colour = self.offColour
+            self.text = text
         elif isinstance(switch, list):
             self.switch = switch
             self.colour = pygame.color.Color(0,0,255)
             self.l = len(switch)
             self.stateN = 0
             self.colourA = []#stick in a comprehension so set the colours
+            if isinstance(text,list):
+                if len(text) == len(switch):
+                    self.text = text
+                else:
+                    print("text array must be the same length as the switch array")
+                    self.text = ''
+            else:
+                self.text = text
         else:
             raise TypeError('switch must be a bool type or a list type or a function')
-        self.text = text
         self.Fsize = Fsize
 
     def pressButton(self):
@@ -81,7 +89,10 @@ class SwitchB(Button):#boom some ineritence
         pygame.draw.rect(surface, colour, self.rect)
         if len(self.text) > 0:
             font = pygame.font.Font('freesansbold.ttf',self.Fsize)
-            msgSurfObj = font.render(self.text, False, pygame.color.Color(0,0,0))
+            if type(self.text) == list:
+                msgSurfObj = font.render(self.text[self.stateN],False,pygame.color.Color(0,0,0))
+            else:
+                msgSurfObj = font.render(self.text, False, pygame.color.Color(0,0,0))
             msgRectObj = msgSurfObj.get_rect()
             msgRectObj.center = (self.rect[0] + int(self.rect[2]/2), self.rect[1] + int(self.rect[3]/2))
             windowSurf.blit(msgSurfObj, msgRectObj)
@@ -136,24 +147,48 @@ class Deck():
         for i in range(n):
             target.append(dealing[i])
             if dealing[i].faceVal == 'A':
-                """AAAAAHHHHH
-YOU NEED TO DO THINGS HERE
-WELL THINGS HAVE HAPPENED HERE ARE IMPORTANT
-MAKE SURE YOU SORT OUT THE ACES
-THE ACES
-THE ACES
-AAAAAAAAHHHHH"""
-                aceBs[dealing[i]] =  SwitchB((0,0,0,0), [1,11],"umm shouldnt this change?")
-                aceBs[dealing[i]].colourA = [pygame.Color(255,0,0),pygame.Color(0,0,255)]        
+##                """AAAAAHHHHH
+##YOU NEED TO DO THINGS HERE
+##WELL THINGS HAVE HAPPENED HERE ARE IMPORTANT
+##MAKE SURE YOU SORT OUT THE ACES
+##THE ACES
+##THE ACES
+##AAAAAAAAHHHHH"""
+##                aceBs[dealing[i]] =  SwitchB((0,0,0,0), [1,11],"umm shouldnt this change?")
+##                aceBs[dealing[i]].colourA = [pygame.Color(255,0,0),pygame.Color(0,0,255)]
+                aceBs[dealing[i]] = AceButton(dealing[i])        
 ##class AceBs():
 ##    def __init__(self,
 """
 and i need to figure out how to make this aceBs class
 """
 
+class AceButton(SwitchB):
+    def __init__(self,card):
+        self.card = card
+        self.colourA = [pygame.Color(255,0,0),pygame.Color(0,0,255)]
+        self.switch = [1,11]
+        self.text = ['1','11']
+        self.l = 2
+        self.stateN = 0
+        self.rect = (0,0,0,0)
+        self.Fsize = 12
+        #with all this i may aswell have just left it as a SwitchB
+##class AceBs():
+##    def __init__(self):
+##        self.buttons = []
+##
+##    def addButton(self,aceButton):
+##        if isinstance(aceButton, AceButton):
+##            self.buttons.append(AceButton)
+##        else:
+##            print("you can only add summat of Aceutton class")
+#don't think it'll work creating AceBs class    
+
+
 
 def displayText(surface,text,topLeft):
-    textSurf = fontObj.render(str(text), False, colour['blue'])
+    textSurf = fontObj.render(str(text), False, colour['green'])
     textRect = textSurf.get_rect()
     textRect.topleft = topLeft
     surface.blit(textSurf, textRect)
@@ -293,6 +328,7 @@ while running:
                 if currentHand[i] in aceBs:
                     aceBs[currentHand[i]].rect = (10+i*(CARDWIDTH+5),100+CARDHEIGHT+10,CARDWIDTH,20)
                     aceBs[currentHand[i]].showButton(windowSurf)
+                    
             hitB.showButton(windowSurf)
 
             displayText(windowSurf, currentPlayer.points, (windowW-75,10))
